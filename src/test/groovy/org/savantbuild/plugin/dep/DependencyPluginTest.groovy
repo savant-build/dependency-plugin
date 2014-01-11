@@ -53,7 +53,7 @@ class DependencyPluginTest {
   public static void beforeSuite() {
     projectDir = Paths.get("")
     if (!Files.isRegularFile(projectDir.resolve("LICENSE"))) {
-      projectDir = Paths.get("dependency-plugin")
+      projectDir = Paths.get("../dependency-plugin")
     }
   }
 
