@@ -96,12 +96,12 @@ class DependencyPluginTest {
     )
 
     assertEquals(classpath.toString(),
-        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar")}"
+        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}"
     )
   }
 
@@ -114,12 +114,12 @@ class DependencyPluginTest {
     }
 
     assertEquals(classpath.toString(),
-        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar")}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar")}:" +
+        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
             "foo.jar"
     )
   }
