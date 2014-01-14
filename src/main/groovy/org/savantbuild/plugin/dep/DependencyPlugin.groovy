@@ -91,7 +91,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
       output.info("Project has no publications defined. Skipping integration")
     }
 
-    for (Publication publication : project.publications) {
+    for (Publication publication : project.publications.allPublications()) {
       // Change the version of the publication to an integration build
       Version integrationVersion = publication.artifact.version.toIntegrationVersion()
       Artifact artifact = new Artifact(publication.artifact.id, integrationVersion, project.license)

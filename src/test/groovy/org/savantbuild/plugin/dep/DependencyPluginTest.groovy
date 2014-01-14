@@ -128,7 +128,7 @@ class DependencyPluginTest {
   public void integrate() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/integration"));
 
-    project.publications.add(
+    project.publications.add("main",
         new Publication(new Artifact("group:name:name:1.1.1:jar", License.BSD),
             new ArtifactMetaData(null, License.BSD), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
     );
