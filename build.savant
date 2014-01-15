@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", license: "Apachev2") {
+  workflow {
+    fetch {
+      cache(dir: "${SYS['user.home']}/.savant/cache")
+    }
+    publish {
+      cache(dir: "${SYS['user.home']}/.savant/cache")
+    }
+  }
+
+  dependencies {
+    group(type: "provided") {
+      dependency(id: "org.savantbuild:savant-core:0.1.0-{integration}")
+      dependency(id: "org.savantbuild:savant-dependency-management:0.1.0-{integration}")
+      dependency(id: "org.savantbuild:savant-utils:0.1.0-{integration}")
+    }
+  }
+}
+
+file = loadPlugin(id: "org.savantbuild.plugin:file:0.1.0-{integration}")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.1.0-{integration}")
+
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.1.0-{integration}")
+groovy.settings.groovyVersion = "2.2"
+groovy.settings.javaVersion = "1.8"
+
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.1.0-{integration}")
+
+target(name: "clean", description: "Cleans the project") {
+  file.prune groovy.layout.buildDirectory
+}
+
+target(name: "compile", description: "Compiles the project") {
+  groovy.compileMain()
+  groovy.compileTest()
+}
+
+target(name: "jar", description: "JARs the project", dependsOn: ["compile"]) {
+  groovy.jar()
+}
+
+target(name: "test", description: "Runs the project's tests", dependsOn: ["jar"]) {
+  groovyTestNG.test()
+}
+
+target(name: "int", description: "Releases a local integration build of the project", dependsOn: ["test"]) {
+  dependency.integrate()
+}
