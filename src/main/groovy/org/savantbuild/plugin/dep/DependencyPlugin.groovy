@@ -89,6 +89,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
   void integrate() {
     if (project.publications.size() == 0) {
       output.info("Project has no publications defined. Skipping integration")
+    } else {
+      output.info("Integrating project.")
     }
 
     for (Publication publication : project.publications.allPublications()) {

@@ -60,7 +60,7 @@ class DependencyPluginTest {
   @BeforeMethod
   public void beforeMethod() {
     output = new SystemOutOutput(true)
-    output.enableDebug()
+//    output.enableDebug()
 
     project = new Project(projectDir, output)
     project.group = "org.savantbuild.test"

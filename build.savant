@@ -16,10 +16,10 @@
 project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", license: "Apachev2") {
   workflow {
     fetch {
-      cache(dir: "${SYS['user.home']}/.savant/cache")
+      cache()
     }
     publish {
-      cache(dir: "${SYS['user.home']}/.savant/cache")
+      cache()
     }
   }
 
@@ -29,10 +29,21 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", l
       dependency(id: "org.savantbuild:savant-dependency-management:0.1.0-{integration}")
       dependency(id: "org.savantbuild:savant-utils:0.1.0-{integration}")
     }
+    group(type: "test-compile") {
+      dependency(id: "org.testng:testng:6.8.7")
+    }
+  }
+
+  publications {
+    main {
+      publication(name: "${project.name}", type: "jar", file: "build/jars/${project.name}-${project.version}.jar", source: "build/jars/${project.name}-${project.version}-src.jar")
+    }
+    test {
+      publication(name: "${project.name}-test", type: "jar", file: "build/jars/${project.name}-test-${project.version}.jar", source: "build/jars/${project.name}-test-${project.version}-src.jar")
+    }
   }
 }
 
-file = loadPlugin(id: "org.savantbuild.plugin:file:0.1.0-{integration}")
 dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.1.0-{integration}")
 
 groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.1.0-{integration}")
@@ -40,9 +51,11 @@ groovy.settings.groovyVersion = "2.2"
 groovy.settings.javaVersion = "1.8"
 
 groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.1.0-{integration}")
+groovyTestNG.settings.groovyVersion = "2.2"
+groovyTestNG.settings.javaVersion = "1.8"
 
 target(name: "clean", description: "Cleans the project") {
-  file.prune groovy.layout.buildDirectory
+  groovy.clean()
 }
 
 target(name: "compile", description: "Compiles the project") {
