@@ -18,7 +18,7 @@
     <dependency-group type="compile">
       <dependency group="org.savantbuild.test" project="multiple-versions" name="multiple-versions" version="1.1.0" type="jar" optional="false"/>
     </dependency-group>
-    <dependency-group type="run">
+    <dependency-group type="runtime">
       <dependency group="org.savantbuild.test" project="multiple-versions-different-dependencies" name="multiple-versions-different-dependencies" version="1.1.0" type="jar" optional="false"/>
     </dependency-group>
   </dependencies>

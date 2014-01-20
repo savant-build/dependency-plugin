@@ -73,7 +73,7 @@ class DependencyPluginTest {
             new Dependency("org.savantbuild.test:multiple-versions:1.0.0", false),
             new Dependency("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0", false)
         ),
-        new DependencyGroup("run", true,
+        new DependencyGroup("runtime", true,
             new Dependency("org.savantbuild.test:intermediate:1.0.0", false)
         )
     );

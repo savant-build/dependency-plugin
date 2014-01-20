@@ -18,7 +18,7 @@
     <dependency-group type="compile">
       <dependency group="org.savantbuild.test" project="leaf1" name="leaf1" version="1.0.0" type="jar" optional="false"/>
     </dependency-group>
-    <dependency-group type="run">
+    <dependency-group type="runtime">
       <dependency group="org.savantbuild.test" project="leaf" name="leaf2" version="1.0.0" type="jar" optional="false"/>
     </dependency-group>
   </dependencies>

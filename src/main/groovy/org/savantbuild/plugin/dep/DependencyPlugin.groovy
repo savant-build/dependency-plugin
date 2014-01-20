@@ -68,7 +68,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
                       @DelegatesTo(Classpath.class) Closure closure = null) {
     Classpath classpath
     if (resolveConfiguration) {
-      ResolvedArtifactGraph resolvedArtifactGraph = dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
+      ResolvedArtifactGraph resolvedArtifactGraph = resolve(resolveConfiguration)
       if (resolvedArtifactGraph.size() == 0) {
         return new Classpath()
       }
@@ -87,10 +87,11 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
-   * Uses the {@link DependencyService} to resolve the porject's dependencies. This 
+   * Uses the {@link DependencyService} to resolve the project's dependencies. This method returns the resulting
+   * {@link ResolvedArtifactGraph}
    *
-   * @param resolveConfiguration
-   * @return
+   * @param resolveConfiguration The ResolveConfiguration used to resolve the dependencies.
+   * @return The ResolvedArtifactGraph.
    */
   ResolvedArtifactGraph resolve(ResolveConfiguration resolveConfiguration) {
     return dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
