@@ -15,12 +15,7 @@
  */
 project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", license: "Apachev2") {
   workflow {
-    fetch {
-      cache()
-    }
-    publish {
-      cache()
-    }
+    standard()
   }
 
   dependencies {
@@ -35,12 +30,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", l
   }
 
   publications {
-    main {
-      publication(name: "${project.name}", type: "jar", file: "build/jars/${project.name}-${project.version}.jar", source: "build/jars/${project.name}-${project.version}-src.jar")
-    }
-    test {
-      publication(name: "${project.name}-test", type: "jar", file: "build/jars/${project.name}-test-${project.version}.jar", source: "build/jars/${project.name}-test-${project.version}-src.jar")
-    }
+    standard()
   }
 }
 

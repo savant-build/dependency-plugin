@@ -45,8 +45,13 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     if (!project.artifactGraph) {
-      DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
-      project.artifactGraph = dependencyService.reduce(dependencyGraph)
+      try {
+        DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
+        project.artifactGraph = dependencyService.reduce(dependencyGraph)
+      } catch (e) {
+        output.debug(e);
+        fail("Unable to resolve project dependencies. Error message is [%s]", e.toString());
+      }
     }
   }
 
@@ -79,6 +84,16 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     return classpath
+  }
+
+  /**
+   * Uses the {@link DependencyService} to resolve the porject's dependencies. This 
+   *
+   * @param resolveConfiguration
+   * @return
+   */
+  ResolvedArtifactGraph resolve(ResolveConfiguration resolveConfiguration) {
+    return dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
   }
 
   /**
