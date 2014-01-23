@@ -14,7 +14,7 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
-import org.savantbuild.dep.DependencyService
+
 import org.savantbuild.dep.domain.*
 import org.savantbuild.dep.workflow.FetchWorkflow
 import org.savantbuild.dep.workflow.PublishWorkflow
@@ -35,6 +35,7 @@ import java.nio.file.Paths
 
 import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertTrue
+
 /**
  * Tests the groovy plugin.
  *
@@ -90,10 +91,10 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void classpathNoClosure() throws Exception {
-    Classpath classpath = plugin.classpath(new DependencyService.ResolveConfiguration()
-        .with("compile", new DependencyService.ResolveConfiguration.TypeResolveConfiguration(true, true))
-    )
+  public void classpathWithDependencies() throws Exception {
+    Classpath classpath = plugin.classpath {
+      dependencies(group: "compile", transitive: true, fetchSource: true)
+    }
 
     assertEquals(classpath.toString(),
         "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
@@ -106,11 +107,10 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void classpathWithClosure() throws Exception {
-    Classpath classpath = plugin.classpath(new DependencyService.ResolveConfiguration()
-        .with("compile", new DependencyService.ResolveConfiguration.TypeResolveConfiguration(true, true))
-    ) {
-      path "foo.jar"
+  public void classpathWithPath() throws Exception {
+    Classpath classpath = plugin.classpath {
+      dependencies(group: "compile", transitive: true, fetchSource: true)
+      path(location: "foo.jar")
     }
 
     assertEquals(classpath.toString(),
@@ -120,7 +120,7 @@ class DependencyPluginTest {
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
-            "foo.jar"
+            project.directory.resolve("foo.jar").toAbsolutePath()
     )
   }
 

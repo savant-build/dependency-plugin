@@ -56,34 +56,18 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
-   * Builds a Classpath using the {@link DependencyService} with the given {@link ResolveConfiguration} (if specified).
-   * The closure is optional and is invoked with the {@link Classpath} as the delegate. Any method on the {@link Classpath}
-   * object can be called from the Closure.
+   * Builds a Classpath with Paths and dependencies. This delegates to the {@link ClasspathDelegate} via the closure.
+   * Look at the methods on that class and its base classes to determine how to use the classpath closure.
    *
-   * @param resolveConfiguration The dependency resolve configuration.
    * @param closure The closure.
    * @return The Classpath.
    */
-  Classpath classpath(ResolveConfiguration resolveConfiguration = null,
-                      @DelegatesTo(Classpath.class) Closure closure = null) {
-    Classpath classpath
-    if (resolveConfiguration) {
-      ResolvedArtifactGraph resolvedArtifactGraph = resolve(resolveConfiguration)
-      if (resolvedArtifactGraph.size() == 0) {
-        return new Classpath()
-      }
+  Classpath classpath(Closure closure) {
+    ClasspathDelegate delegate = new ClasspathDelegate(project, dependencyService)
+    closure.delegate = delegate
+    closure()
 
-      classpath = resolvedArtifactGraph.toClasspath()
-    } else {
-      classpath = new Classpath()
-    }
-
-    if (closure) {
-      closure.delegate = classpath
-      closure()
-    }
-
-    return classpath
+    return delegate.toClasspath()
   }
 
   /**
