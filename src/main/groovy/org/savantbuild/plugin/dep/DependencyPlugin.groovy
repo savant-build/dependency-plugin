@@ -27,8 +27,6 @@ import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 
-import static org.savantbuild.dep.DependencyService.ResolveConfiguration
-
 /**
  * Dependency plugin.
  *
@@ -71,14 +69,18 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
-   * Uses the {@link DependencyService} to resolve the project's dependencies. This method returns the resulting
-   * {@link ResolvedArtifactGraph}
+   * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
+   * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
    *
-   * @param resolveConfiguration The ResolveConfiguration used to resolve the dependencies.
+   * @param closure The Closure.
    * @return The ResolvedArtifactGraph.
    */
-  ResolvedArtifactGraph resolve(ResolveConfiguration resolveConfiguration) {
-    return dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
+  ResolvedArtifactGraph resolve(Closure closure) {
+    ResolveDelegate delegate = new ResolveDelegate(project, dependencyService)
+    closure.delegate = delegate
+    closure()
+
+    return delegate.resolve()
   }
 
   /**

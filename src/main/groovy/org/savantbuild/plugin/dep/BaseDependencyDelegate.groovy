@@ -14,21 +14,18 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
-
 import org.savantbuild.domain.Project
 import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.runtime.BuildFailureException
-import org.savantbuild.runtime.groovy.SavantGroovyObject
 
 import static org.savantbuild.dep.DependencyService.ResolveConfiguration
 import static org.savantbuild.dep.DependencyService.ResolveConfiguration.TypeResolveConfiguration
-
 /**
  * Base class for delegates that might work on dependencies.
  *
  * @author Brian Pontarelli
  */
-class BaseDependencyDelegate extends SavantGroovyObject {
+class BaseDependencyDelegate {
   public static final String ERROR_MESSAGE = "The dependencies method must be called like this:\n\n" +
       "  dependencies(group: \"compile\", transitive: true, fetchSource: true, transitiveGroups: [\"compile\", \"runtime\"])"
 
