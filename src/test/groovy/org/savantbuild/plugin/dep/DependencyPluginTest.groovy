@@ -77,7 +77,7 @@ class DependencyPluginTest {
         new DependencyGroup("runtime", true,
             new Dependency("org.savantbuild.test:intermediate:1.0.0", false)
         )
-    );
+    )
     project.workflow = new Workflow(
         new FetchWorkflow(output,
             new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
@@ -125,25 +125,40 @@ class DependencyPluginTest {
   }
 
   @Test
+  public void copy() throws Exception {
+    FileTools.prune(projectDir.resolve("build/test/copy"))
+
+    plugin.copy(to: "build/test/copy") {
+      dependencies(group: "compile", transitive: true)
+    }
+
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/multiple-versions-1.1.0.jar")))
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/leaf1-1.0.0.jar")))
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/integration-build-2.1.1-{integration}.jar")))
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/multiple-versions-different-dependencies-1.1.0.jar")))
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/leaf2-1.0.0.jar")))
+  }
+
+  @Test
   public void integrate() throws Exception {
-    FileTools.prune(projectDir.resolve("build/test/integration"));
+    FileTools.prune(projectDir.resolve("build/test/integration"))
 
     project.publications.add("main",
         new Publication(new Artifact("group:name:name:1.1.1:jar", License.BSD),
             new ArtifactMetaData(null, License.BSD), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
-    );
+    )
     project.workflow = new Workflow(
         new FetchWorkflow(output),
         new PublishWorkflow(new CacheProcess(output, projectDir.resolve("build/test/integration").toString()))
-    );
+    )
 
-    plugin.integrate();
+    plugin.integrate()
 
-    Path integrationFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}.jar");
-    Path integrationSourceFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}-src.jar");
-    assertTrue(Files.isRegularFile(integrationFile));
-    assertTrue(Files.isRegularFile(integrationSourceFile));
-    assertEquals(Files.readAllBytes(integrationFile), Files.readAllBytes(projectDir.resolve("LICENSE")));
-    assertEquals(Files.readAllBytes(integrationSourceFile), Files.readAllBytes(projectDir.resolve("README.md")));
+    Path integrationFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}.jar")
+    Path integrationSourceFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}-src.jar")
+    assertTrue(Files.isRegularFile(integrationFile))
+    assertTrue(Files.isRegularFile(integrationSourceFile))
+    assertEquals(Files.readAllBytes(integrationFile), Files.readAllBytes(projectDir.resolve("LICENSE")))
+    assertEquals(Files.readAllBytes(integrationSourceFile), Files.readAllBytes(projectDir.resolve("README.md")))
   }
 }

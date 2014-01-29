@@ -54,6 +54,22 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
+   * Copies the project's dependencies to a directory. This delegates to the {@link CopyDelegate} via the closure.
+   * The attributes must also contain a "to" directory.
+   *
+   * @param attributes The named attributes (to is required).
+   * @param closure The closure.
+   * @return The number of dependencies copied.
+   */
+  int copy(Map<String, Object> attributes, Closure closure) {
+    CopyDelegate delegate = new CopyDelegate(attributes, project, dependencyService)
+    closure.delegate = delegate
+    closure()
+
+    return delegate.copy()
+  }
+
+  /**
    * Builds a Classpath with Paths and dependencies. This delegates to the {@link ClasspathDelegate} via the closure.
    * Look at the methods on that class and its base classes to determine how to use the classpath closure.
    *

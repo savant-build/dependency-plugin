@@ -14,12 +14,14 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
+
 import org.savantbuild.domain.Project
 import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.runtime.BuildFailureException
 
 import static org.savantbuild.dep.DependencyService.ResolveConfiguration
 import static org.savantbuild.dep.DependencyService.ResolveConfiguration.TypeResolveConfiguration
+
 /**
  * Base class for delegates that might work on dependencies.
  *
