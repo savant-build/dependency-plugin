@@ -12,21 +12,43 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="library" name="Groovy 2.2" level="application" />
+    <orderEntry type="module" module-name="savant-core" scope="PROVIDED" />
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/testng-6.8.jar!/" />
+          <root url="jar://$USER_HOME$/.savant/cache/org/codehaus/groovy/groovy/2.2.1/groovy-all-2.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/libs/testng-6.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.savant/cache/org/codehaus/groovy/groovy/2.2.1/groovy-all-2.2.1-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="savant-core" />
-    <orderEntry type="module" module-name="savant-dependency-management" />
-    <orderEntry type="module" module-name="savant-utils" />
-    <orderEntry type="library" name="Groovy 2.2" level="application" />
+    <orderEntry type="module" module-name="savant-dependency-management" scope="PROVIDED" />
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.savant/cache/ch/ethz/ganymed/ganymed-ssh2/261.0.0/ganymed-ssh2-261.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.savant/cache/ch/ethz/ganymed/ganymed-ssh2/261.0.0/ganymed-ssh2-261.0.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="savant-utils" scope="PROVIDED" />
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/testng/testng/6.8.7/testng-6.8.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/testng/testng/6.8.7/testng-6.8.7-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 
