@@ -14,6 +14,7 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
+
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.graph.ResolvedArtifactGraph
 import org.savantbuild.domain.Project
@@ -25,6 +26,7 @@ import org.savantbuild.runtime.BuildFailureException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+
 /**
  * Delegate for the copy method's closure. This passes through everything to the Copier.
  *
