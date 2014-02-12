@@ -56,6 +56,14 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Copies the project's dependencies to a directory. This delegates to the {@link CopyDelegate} via the closure.
    * The attributes must also contain a "to" directory.
+   * <p/>
+   * Here is an example of calling this method:
+   * <p/>
+   * <pre>
+   *   dependency.copy(to: "build/distributions/lib") {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param attributes The named attributes (to is required).
    * @param closure The closure.
@@ -72,6 +80,14 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Builds a Classpath with Paths and dependencies. This delegates to the {@link ClasspathDelegate} via the closure.
    * Look at the methods on that class and its base classes to determine how to use the classpath closure.
+   * <p/>
+   * Here is an example of calling this method:
+   * <p/>
+   * <pre>
+   *   Classpath classpath = dependency.classpath {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param closure The closure.
    * @return The Classpath.
@@ -87,6 +103,14 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
    * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
+   * <p/>
+   * Here is an example of calling this method:
+   * <p/>
+   * <pre>
+   *   ResolvedArtifactGraph graph = dependency.resolve {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param closure The Closure.
    * @return The ResolvedArtifactGraph.
@@ -103,6 +127,12 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Integrates the project (using the project's defined publications and workflow). If there are no publications, this
    * does nothing. Otherwise, it builds the integration version from the project's version and then publishes the
    * publications using the project's workflow.
+   * <p/>
+   * Here is an example of calling this method:
+   * <p/>
+   * <pre>
+   *   dependency.integrate()
+   * </pre>
    */
   void integrate() {
     if (project.publications.size() == 0) {
