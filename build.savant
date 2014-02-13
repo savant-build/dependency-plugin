@@ -23,7 +23,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", l
   }
 
   publishWorkflow {
-    subversion(repository: "http://svn.inversoft.org")
+    subversion(repository: "http://svn.inversoft.org/savant")
   }
 
   dependencies {
