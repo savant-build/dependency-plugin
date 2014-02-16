@@ -74,7 +74,7 @@ class ClasspathDelegate extends BaseDependencyDelegate {
    */
   Classpath toClasspath() {
     Classpath classpath
-    if (resolveConfiguration != null) {
+    if (resolveConfiguration != null && project.dependencies != null) {
       ResolvedArtifactGraph graph = dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
       classpath = graph.toClasspath()
     } else {

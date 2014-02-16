@@ -44,7 +44,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", l
 
 // Plugins
 dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:${savantVersion}")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:${savantVersion}")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.1.1")
 groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:${savantVersion}")
 idea = loadPlugin(id: "org.savantbuild.plugin:idea:${savantVersion}")
 release = loadPlugin(id: "org.savantbuild.plugin:release-git:${savantVersion}")
@@ -75,6 +75,10 @@ target(name: "jar", description: "JARs the project", dependsOn: ["compile"]) {
 
 target(name: "test", description: "Runs the project's tests", dependsOn: ["jar"]) {
   groovyTestNG.test()
+}
+
+target(name: "doc", description: "Generate the project's JavaDoc", dependsOn: ["jar"]) {
+  groovy.document()
 }
 
 target(name: "int", description: "Releases a local integration build of the project", dependsOn: ["test"]) {

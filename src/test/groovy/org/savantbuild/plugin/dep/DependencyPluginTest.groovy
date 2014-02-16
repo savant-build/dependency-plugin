@@ -48,8 +48,6 @@ class DependencyPluginTest {
 
   Project project
 
-  DependencyPlugin plugin
-
   @BeforeSuite
   public static void beforeSuite() {
     projectDir = Paths.get("")
@@ -86,12 +84,23 @@ class DependencyPluginTest {
             new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
         )
     )
+  }
 
-    plugin = new DependencyPlugin(project, output)
+  @Test
+  public void classpathWithNoDependencies() throws Exception {
+    project.dependencies = null
+
+    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    Classpath classpath = plugin.classpath {
+      dependencies(group: "compile", transitive: true, fetchSource: true)
+    }
+
+    assertEquals(classpath.toString(), "")
   }
 
   @Test
   public void classpathWithDependencies() throws Exception {
+    DependencyPlugin plugin = new DependencyPlugin(project, output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
     }
@@ -108,6 +117,7 @@ class DependencyPluginTest {
 
   @Test
   public void classpathWithPath() throws Exception {
+    DependencyPlugin plugin = new DependencyPlugin(project, output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
       path(location: "foo.jar")
@@ -128,6 +138,7 @@ class DependencyPluginTest {
   public void copy() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/copy"))
 
+    DependencyPlugin plugin = new DependencyPlugin(project, output)
     plugin.copy(to: "build/test/copy") {
       dependencies(group: "compile", transitive: true)
     }
@@ -148,10 +159,13 @@ class DependencyPluginTest {
             new ArtifactMetaData(null, License.BSD), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
     )
     project.workflow = new Workflow(
-        new FetchWorkflow(output),
+        new FetchWorkflow(output,
+            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+        ),
         new PublishWorkflow(new CacheProcess(output, projectDir.resolve("build/test/integration").toString()))
     )
 
+    DependencyPlugin plugin = new DependencyPlugin(project, output)
     plugin.integrate()
 
     Path integrationFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}.jar")
