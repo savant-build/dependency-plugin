@@ -17,7 +17,7 @@ import java.nio.file.Paths
  */
 savantVersion = "0.1.0"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.0", license: "Apachev2") {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.1.1", license: "Apachev2") {
   workflow {
     standard()
   }
