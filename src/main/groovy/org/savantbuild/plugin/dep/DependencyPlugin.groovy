@@ -56,9 +56,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Copies the project's dependencies to a directory. This delegates to the {@link CopyDelegate} via the closure.
    * The attributes must also contain a "to" directory.
-   * <p/>
+   * <p>
    * Here is an example of calling this method:
-   * <p/>
+   * <p>
    * <pre>
    *   dependency.copy(to: "build/distributions/lib") {
    *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
@@ -80,9 +80,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Builds a Classpath with Paths and dependencies. This delegates to the {@link ClasspathDelegate} via the closure.
    * Look at the methods on that class and its base classes to determine how to use the classpath closure.
-   * <p/>
+   * <p>
    * Here is an example of calling this method:
-   * <p/>
+   * <p>
    * <pre>
    *   Classpath classpath = dependency.classpath {
    *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
@@ -103,9 +103,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
   /**
    * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
    * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
-   * <p/>
+   * <p>
    * Here is an example of calling this method:
-   * <p/>
+   * <p>
    * <pre>
    *   ResolvedArtifactGraph graph = dependency.resolve {
    *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
@@ -127,9 +127,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Integrates the project (using the project's defined publications and workflow). If there are no publications, this
    * does nothing. Otherwise, it builds the integration version from the project's version and then publishes the
    * publications using the project's workflow.
-   * <p/>
+   * <p>
    * Here is an example of calling this method:
-   * <p/>
+   * <p>
    * <pre>
    *   dependency.integrate()
    * </pre>
