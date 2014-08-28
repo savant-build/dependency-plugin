@@ -1,5 +1,7 @@
 Manifest-Version: 1.0
 Created-By: Inversoft
-Main-Class: NotUsed
 Savant-Plugin-Class: org.savantbuild.plugin.dep.DependencyPlugin
-
+Specification-Version: 0.2.0
+Specification-Vendor: Savant
+Implementation-Version: 0.2.0
+Implementation-Vendor: Savant

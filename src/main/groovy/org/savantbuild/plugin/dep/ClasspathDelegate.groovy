@@ -33,8 +33,8 @@ import java.nio.file.Path
 class ClasspathDelegate extends BaseDependencyDelegate {
   public static final String ERROR_MESSAGE = "The dependency plugin classpath method must be called like this:\n\n" +
       "  dependency.classpath {\n" +
-      "    path(dir: \"some-directory\")\n" +
-      "    path(dir: Paths.get(\"some-otherdirectory\"))\n" +
+      "    path(location: \"some-directory\")\n" +
+      "    path(location: Paths.get(\"some-otherdirectory\"))\n" +
       "  }"
 
   private final DependencyService dependencyService
@@ -57,7 +57,7 @@ class ClasspathDelegate extends BaseDependencyDelegate {
    * @return The Path.
    */
   Path path(Map<String, Object> attributes) {
-    if (!GroovyTools.attributesValid(attributes, ["location"], [:])) {
+    if (!GroovyTools.attributesValid(attributes, ["location"], ["location"], [:])) {
       throw new BuildFailureException(ERROR_MESSAGE)
     }
 

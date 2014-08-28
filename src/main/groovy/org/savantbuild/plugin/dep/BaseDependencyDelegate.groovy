@@ -58,7 +58,7 @@ class BaseDependencyDelegate {
    * @return The ResolveConfiguration that this dependencies set is added to.
    */
   ResolveConfiguration dependencies(Map<String, Object> attributes) {
-    if (!GroovyTools.attributesValid(attributes, ["group"], DEPENDENCIES_ATTRIBUTE_TYPES)) {
+    if (!GroovyTools.attributesValid(attributes, ["group", "transitive", "fetchSource", "transitiveGroups"], ["group"], DEPENDENCIES_ATTRIBUTE_TYPES)) {
       throw new BuildFailureException(ERROR_MESSAGE)
     }
 

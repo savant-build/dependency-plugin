@@ -46,7 +46,7 @@ class CopyDelegate extends BaseDependencyDelegate {
     super(project)
     this.dependencyService = dependencyService
 
-    if (!GroovyTools.attributesValid(attributes, ["to"], [:])) {
+    if (!GroovyTools.attributesValid(attributes, ["to"], ["to"], [:])) {
       throw new BuildFailureException(ERROR_MESSAGE);
     }
 

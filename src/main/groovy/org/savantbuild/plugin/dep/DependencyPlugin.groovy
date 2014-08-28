@@ -26,6 +26,7 @@ import org.savantbuild.domain.Project
 import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
+import org.savantbuild.runtime.RuntimeConfiguration
 
 /**
  * Dependency plugin.
@@ -35,8 +36,8 @@ import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 class DependencyPlugin extends BaseGroovyPlugin {
   DependencyService dependencyService = new DefaultDependencyService(output)
 
-  DependencyPlugin(Project project, Output output) {
-    super(project, output)
+  DependencyPlugin(Project project, RuntimeConfiguration runtimeConfiguration, Output output) {
+    super(project, runtimeConfiguration, output)
 
     if (!project.dependencies) {
       return

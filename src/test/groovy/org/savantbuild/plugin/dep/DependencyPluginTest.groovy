@@ -25,6 +25,7 @@ import org.savantbuild.io.FileTools
 import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
 import org.savantbuild.output.SystemOutOutput
+import org.savantbuild.runtime.RuntimeConfiguration
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
@@ -90,7 +91,7 @@ class DependencyPluginTest {
   public void classpathWithNoDependencies() throws Exception {
     project.dependencies = null
 
-    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
     }
@@ -100,7 +101,7 @@ class DependencyPluginTest {
 
   @Test
   public void classpathWithDependencies() throws Exception {
-    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
     }
@@ -117,7 +118,7 @@ class DependencyPluginTest {
 
   @Test
   public void classpathWithPath() throws Exception {
-    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
       path(location: "foo.jar")
@@ -138,7 +139,7 @@ class DependencyPluginTest {
   public void copy() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/copy"))
 
-    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.copy(to: "build/test/copy") {
       dependencies(group: "compile", transitive: true)
     }
@@ -165,7 +166,7 @@ class DependencyPluginTest {
         new PublishWorkflow(new CacheProcess(output, projectDir.resolve("build/test/integration").toString()))
     )
 
-    DependencyPlugin plugin = new DependencyPlugin(project, output)
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.integrate()
 
     Path integrationFile = projectDir.resolve("build/test/integration/group/name/1.1.1-{integration}/name-1.1.1-{integration}.jar")
