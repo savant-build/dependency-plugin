@@ -36,7 +36,6 @@ import java.nio.file.Paths
 
 import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertTrue
-
 /**
  * Tests the groovy plugin.
  *
@@ -175,5 +174,32 @@ class DependencyPluginTest {
     assertTrue(Files.isRegularFile(integrationSourceFile))
     assertEquals(Files.readAllBytes(integrationFile), Files.readAllBytes(projectDir.resolve("LICENSE")))
     assertEquals(Files.readAllBytes(integrationSourceFile), Files.readAllBytes(projectDir.resolve("README.md")))
+  }
+
+  @Test(enabled = true)
+  public void listUnusedDependencies() {
+    project.dependencies = new Dependencies(
+        new DependencyGroup("compile", true,
+            new Dependency("org.savantbuild:savant-core:0.2.0-{integration}", false),
+            new Dependency("org.apache.commons:commons-compress:1.7", false),
+        ),
+        new DependencyGroup("test-compile", true,
+            new Dependency("org.testng:testng:6.8.7", false),
+            new Dependency("org.apache.commons:commons-compress:1.7", false)
+        )
+    )
+    project.workflow = new Workflow(
+        new FetchWorkflow(output,
+            new CacheProcess(output, null),
+            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+        ),
+        new PublishWorkflow(
+            new CacheProcess(output, null)
+        )
+    )
+//    output.enableDebug()
+
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    plugin.listUnusedDependencies()
   }
 }

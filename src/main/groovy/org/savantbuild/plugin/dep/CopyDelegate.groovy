@@ -14,19 +14,16 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
-
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.graph.ResolvedArtifactGraph
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
-import org.savantbuild.lang.Classpath
 import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.runtime.BuildFailureException
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
-
 /**
  * Delegate for the copy method's closure. This passes through everything to the Copier.
  *
@@ -42,16 +39,19 @@ class CopyDelegate extends BaseDependencyDelegate {
 
   public final Path to
 
+  public final boolean removeVersion
+
   CopyDelegate(Map<String, Object> attributes, Project project, DependencyService dependencyService) {
     super(project)
     this.dependencyService = dependencyService
 
-    if (!GroovyTools.attributesValid(attributes, ["to"], ["to"], [:])) {
+    if (!GroovyTools.attributesValid(attributes, ["to", "removeVersion"], ["to"], [:])) {
       throw new BuildFailureException(ERROR_MESSAGE);
     }
 
     def to = FileTools.toPath(attributes["to"])
     this.to = project.directory.resolve(to)
+    this.removeVersion = attributes["removeVersion"] == true
   }
 
   /**
@@ -60,13 +60,32 @@ class CopyDelegate extends BaseDependencyDelegate {
    * @return The number of dependencies copied.
    */
   int copy() {
+    if (project.artifactGraph == null || project.workflow == null || resolveConfiguration == null || resolveConfiguration.groupConfigurations.isEmpty()) {
+      throw new BuildFailureException("Unable to resolve the project dependencies because one of these items was not specified: " +
+          "[project.artifactGraph], [project.workflow], [resolveConfiguration], [resolveConfiguration.groupConfigurations]. " +
+          "These are often supplied by by a closure like this:\n\n" +
+          "  copy(to: \"foo\") {\n" +
+          "    dependencies(group: \"compile\", transitive: true, fetchSource: false, transitiveGroups: [\"compile\"])\n" +
+          "  }")
+    }
+
     if (!Files.isDirectory(to)) {
       Files.createDirectories(to)
     }
 
     ResolvedArtifactGraph resolvedGraph = dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
-    Classpath classpath = resolvedGraph.toClasspath()
-    classpath.paths.each { path -> Files.copy(path, to.resolve(path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING) }
-    return classpath.paths.size()
+    int count = 0
+    resolvedGraph.traverse(resolvedGraph.root, true, { origin, destination, value, depth ->
+      String name = destination.file.getFileName().toString()
+      if (removeVersion) {
+        name = name.replace("-${destination.version}", "")
+      }
+
+      count++
+      Files.copy(destination.file, to.resolve(name), StandardCopyOption.REPLACE_EXISTING)
+      return true
+    });
+
+    return count
   }
 }

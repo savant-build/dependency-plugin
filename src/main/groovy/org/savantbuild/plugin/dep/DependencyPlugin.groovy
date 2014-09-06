@@ -19,14 +19,20 @@ import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.domain.Artifact
 import org.savantbuild.dep.domain.Publication
+import org.savantbuild.dep.domain.ResolvedArtifact
 import org.savantbuild.dep.domain.Version
 import org.savantbuild.dep.graph.DependencyGraph
 import org.savantbuild.dep.graph.ResolvedArtifactGraph
 import org.savantbuild.domain.Project
+import org.savantbuild.io.FileTools
 import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
+import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
+
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Dependency plugin.
@@ -61,8 +67,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   dependency.copy(to: "build/distributions/lib") {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   dependency.copy(to: "build/distributions/lib") {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
    *   }
    * </pre>
    *
@@ -149,5 +154,45 @@ class DependencyPlugin extends BaseGroovyPlugin {
       Publication integrationPublication = new Publication(artifact, publication.metaData, publication.file, publication.sourceFile)
       dependencyService.publish(integrationPublication, project.workflow.publishWorkflow)
     }
+  }
+
+  /**
+   * Determines which of the project's direct dependencies are not being used anymore. This assumes that the groups are
+   * broken down like this:
+   * <p>
+   * Here is an example of calling this method:
+   * <p>
+   * <pre>
+   *   dependency.integrate()
+   * </pre>
+   */
+  Set<ResolvedArtifact> listUnusedDependencies(Map<String, Object> attributes = [:]) {
+    if (!GroovyTools.attributesValid(attributes, ["mainBuildDirectory", "mainDependencyGroup", "testBuildDirectory", "testDependencyGroup"], [], [:])) {
+      fail("Invalid attributes passed to the listUnusedDependencies ${attributes}. The valid attributes are " +
+          "[mainBuildDirectory, mainDependencyGroup, testBuildDirectory, testDependencyGroup].");
+    }
+
+    Path mainBuildDirectory = FileTools.toPath(attributes["mainBuildDirectory"])
+    if (mainBuildDirectory == null) {
+      mainBuildDirectory = Paths.get("build/classes/main")
+    }
+    Path testBuildDirectory = FileTools.toPath(attributes["testBuildDirectory"])
+    if (testBuildDirectory == null) {
+      testBuildDirectory = Paths.get("build/classes/test")
+    }
+    String mainDependencyGroup = attributes["mainDependencyGroup"];
+    if (mainDependencyGroup == null) {
+      mainDependencyGroup = "compile"
+    }
+    String testDependencyGroup = attributes["testDependencyGroup"];
+    if (testDependencyGroup == null) {
+      testDependencyGroup = "test-compile"
+    }
+
+    DependencyChecker checker = new DependencyChecker(project, output, this)
+    Set<ResolvedArtifact> unused = checker.check(mainBuildDirectory, mainDependencyGroup)
+    Set<ResolvedArtifact> unusedTest = checker.check(testBuildDirectory, testDependencyGroup)
+    unused.addAll(unusedTest)
+    return unused
   }
 }

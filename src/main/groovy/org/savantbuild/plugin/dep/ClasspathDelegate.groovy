@@ -73,6 +73,15 @@ class ClasspathDelegate extends BaseDependencyDelegate {
    * @return The Classpath.
    */
   Classpath toClasspath() {
+    if (project.artifactGraph == null || project.workflow == null || resolveConfiguration == null || resolveConfiguration.groupConfigurations.isEmpty()) {
+      throw new BuildFailureException("Unable to resolve the project dependencies because one of these items was not specified: " +
+          "[project.artifactGraph], [project.workflow], [resolveConfiguration], [resolveConfiguration.groupConfigurations]. " +
+          "These are often supplied by by a closure like this:\n\n" +
+          "  classpath() {\n" +
+          "    dependencies(group: \"compile\", transitive: true, fetchSource: false, transitiveGroups: [\"compile\"])\n" +
+          "  }")
+    }
+
     Classpath classpath
     if (resolveConfiguration != null && project.dependencies != null) {
       ResolvedArtifactGraph graph = dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)

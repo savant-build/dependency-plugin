@@ -12,6 +12,17 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/ow2/asm/asm/5.0.3/asm-5.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/ow2/asm/asm/5.0.3/asm-5.0.3-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="library" name="Groovy 2.2" level="application" />
     <orderEntry type="module" module-name="savant-core" scope="PROVIDED" />
     <orderEntry type="module-library" scope="PROVIDED">
