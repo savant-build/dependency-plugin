@@ -39,7 +39,7 @@ class ResolveDelegate extends BaseDependencyDelegate {
    * @return The ResolvedArtifactGraph.
    */
   ResolvedArtifactGraph resolve() {
-    if (project.artifactGraph == null || project.workflow == null || resolveConfiguration == null || resolveConfiguration.groupConfigurations.isEmpty()) {
+    if (project.artifactGraph == null || project.workflow == null || traversalRules == null || traversalRules.rules.isEmpty()) {
       throw new BuildFailureException("Unable to resolve the project dependencies because one of these items was not specified: " +
           "[project.artifactGraph], [project.workflow], [resolveConfiguration], [resolveConfiguration.groupConfigurations]. " +
           "These are often supplied by by a closure like this:\n\n" +
@@ -48,6 +48,6 @@ class ResolveDelegate extends BaseDependencyDelegate {
           "  }")
     }
 
-    return dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
+    return dependencyService.resolve(project.artifactGraph, project.workflow, traversalRules)
   }
 }

@@ -36,6 +36,7 @@ import java.nio.file.Paths
 
 import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertTrue
+
 /**
  * Tests the groovy plugin.
  *
@@ -69,11 +70,11 @@ class DependencyPluginTest {
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Dependency("org.savantbuild.test:multiple-versions:1.0.0", false),
-            new Dependency("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0", false)
+            new Artifact("org.savantbuild.test:multiple-versions:1.0.0"),
+            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0")
         ),
         new DependencyGroup("runtime", true,
-            new Dependency("org.savantbuild.test:intermediate:1.0.0", false)
+            new Artifact("org.savantbuild.test:intermediate:1.0.0")
         )
     )
     project.workflow = new Workflow(
@@ -155,7 +156,7 @@ class DependencyPluginTest {
     FileTools.prune(projectDir.resolve("build/test/integration"))
 
     project.publications.add("main",
-        new Publication(new Artifact("group:name:name:1.1.1:jar", License.BSD),
+        new Publication(new ReifiedArtifact("group:name:name:1.1.1:jar", License.BSD),
             new ArtifactMetaData(null, License.BSD), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
     )
     project.workflow = new Workflow(
@@ -180,12 +181,12 @@ class DependencyPluginTest {
   public void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Dependency("org.savantbuild:savant-core:0.2.0-{integration}", false),
-            new Dependency("org.apache.commons:commons-compress:1.7", false),
+            new Artifact("org.savantbuild:savant-core:0.2.0-{integration}"),
+            new Artifact("org.apache.commons:commons-compress:1.7"),
         ),
         new DependencyGroup("test-compile", true,
-            new Dependency("org.testng:testng:6.8.7", false),
-            new Dependency("org.apache.commons:commons-compress:1.7", false)
+            new Artifact("org.testng:testng:6.8.7"),
+            new Artifact("org.apache.commons:commons-compress:1.7")
         )
     )
     project.workflow = new Workflow(

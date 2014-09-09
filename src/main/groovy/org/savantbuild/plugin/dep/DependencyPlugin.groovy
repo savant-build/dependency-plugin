@@ -17,8 +17,8 @@ package org.savantbuild.plugin.dep
 
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
-import org.savantbuild.dep.domain.Artifact
 import org.savantbuild.dep.domain.Publication
+import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.dep.domain.ResolvedArtifact
 import org.savantbuild.dep.domain.Version
 import org.savantbuild.dep.graph.DependencyGraph
@@ -68,8 +68,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * <p>
    * <pre>
    *   dependency.copy(to: "build/distributions/lib") {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *}* </pre>
    *
    * @param attributes The named attributes (to is required).
    * @param closure The closure.
@@ -90,10 +89,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   Classpath classpath = dependency.classpath {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *   Classpath classpath = dependency.classpath {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *}* </pre>
    *
    * @param closure The closure.
    * @return The Classpath.
@@ -113,10 +110,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   ResolvedArtifactGraph graph = dependency.resolve {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *   ResolvedArtifactGraph graph = dependency.resolve {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *}* </pre>
    *
    * @param closure The Closure.
    * @return The ResolvedArtifactGraph.
@@ -150,7 +145,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     for (Publication publication : project.publications.allPublications()) {
       // Change the version of the publication to an integration build
       Version integrationVersion = publication.artifact.version.toIntegrationVersion()
-      Artifact artifact = new Artifact(publication.artifact.id, integrationVersion, project.license)
+      ReifiedArtifact artifact = new ReifiedArtifact(publication.artifact.id, integrationVersion, project.license)
       Publication integrationPublication = new Publication(artifact, publication.metaData, publication.file, publication.sourceFile)
       dependencyService.publish(integrationPublication, project.workflow.publishWorkflow)
     }

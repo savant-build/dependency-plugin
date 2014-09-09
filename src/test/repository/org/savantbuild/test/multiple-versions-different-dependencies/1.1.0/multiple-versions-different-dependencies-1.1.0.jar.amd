@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2001-2013, Inversoft, All Rights Reserved
+  ~ Copyright (c) 2014, Inversoft Inc., All Rights Reserved
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 <artifact-meta-data license="Apachev2">
   <dependencies>
     <dependency-group type="compile">
-      <dependency group="org.savantbuild.test" project="leaf1" name="leaf1" version="1.0.0" type="jar" optional="false"/>
-      <dependency group="org.savantbuild.test" project="leaf2" name="leaf2" version="1.0.0" type="jar" optional="false"/>
+      <dependency group="org.savantbuild.test" project="leaf1" name="leaf1" version="1.0.0" type="jar"/>
+      <dependency group="org.savantbuild.test" project="leaf2" name="leaf2" version="1.0.0" type="jar"/>
     </dependency-group>
     <dependency-group type="runtime">
-      <dependency group="org.savantbuild.test" project="leaf3" name="leaf3" version="1.0.0" type="jar" optional="true"/>
+      <dependency group="org.savantbuild.test" project="leaf3" name="leaf3" version="1.0.0" type="jar"/>
     </dependency-group>
   </dependencies>
 </artifact-meta-data>

@@ -14,6 +14,7 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
+
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.graph.ResolvedArtifactGraph
 import org.savantbuild.domain.Project
@@ -24,6 +25,7 @@ import org.savantbuild.runtime.BuildFailureException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+
 /**
  * Delegate for the copy method's closure. This passes through everything to the Copier.
  *
@@ -60,7 +62,7 @@ class CopyDelegate extends BaseDependencyDelegate {
    * @return The number of dependencies copied.
    */
   int copy() {
-    if (project.artifactGraph == null || project.workflow == null || resolveConfiguration == null || resolveConfiguration.groupConfigurations.isEmpty()) {
+    if (project.artifactGraph == null || project.workflow == null || traversalRules == null || traversalRules.rules.isEmpty()) {
       throw new BuildFailureException("Unable to resolve the project dependencies because one of these items was not specified: " +
           "[project.artifactGraph], [project.workflow], [resolveConfiguration], [resolveConfiguration.groupConfigurations]. " +
           "These are often supplied by by a closure like this:\n\n" +
@@ -73,7 +75,7 @@ class CopyDelegate extends BaseDependencyDelegate {
       Files.createDirectories(to)
     }
 
-    ResolvedArtifactGraph resolvedGraph = dependencyService.resolve(project.artifactGraph, project.workflow, resolveConfiguration)
+    ResolvedArtifactGraph resolvedGraph = dependencyService.resolve(project.artifactGraph, project.workflow, traversalRules)
     int count = 0
     resolvedGraph.traverse(resolvedGraph.root, true, { origin, destination, value, depth ->
       String name = destination.file.getFileName().toString()

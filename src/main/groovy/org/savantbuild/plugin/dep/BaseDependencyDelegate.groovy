@@ -19,8 +19,8 @@ import org.savantbuild.domain.Project
 import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.runtime.BuildFailureException
 
-import static org.savantbuild.dep.DependencyService.ResolveConfiguration
-import static org.savantbuild.dep.DependencyService.ResolveConfiguration.TypeResolveConfiguration
+import static org.savantbuild.dep.DependencyService.TraversalRules
+import static org.savantbuild.dep.DependencyService.TraversalRules.GroupTraversalRule
 
 /**
  * Base class for delegates that might work on dependencies.
@@ -40,7 +40,7 @@ class BaseDependencyDelegate {
 
   public Project project
 
-  public ResolveConfiguration resolveConfiguration
+  public TraversalRules traversalRules
 
   BaseDependencyDelegate(project) {
     this.project = project
@@ -57,22 +57,22 @@ class BaseDependencyDelegate {
    * @param attributes The attributes.
    * @return The ResolveConfiguration that this dependencies set is added to.
    */
-  ResolveConfiguration dependencies(Map<String, Object> attributes) {
+  TraversalRules dependencies(Map<String, Object> attributes) {
     if (!GroovyTools.attributesValid(attributes, ["group", "transitive", "fetchSource", "transitiveGroups"], ["group"], DEPENDENCIES_ATTRIBUTE_TYPES)) {
       throw new BuildFailureException(ERROR_MESSAGE)
     }
 
     GroovyTools.putDefaults(attributes, DEPENDENCIES_DEFAULT_ATTRIBUTES)
 
-    def group = attributes["group"]
-    def transitive = attributes["transitive"]
-    def fetchSource = attributes["fetchSource"]
-    def transitiveGroups = attributes["transitiveGroups"]
+    String group = attributes["group"]
+    boolean transitive = attributes["transitive"]
+    boolean fetchSource = attributes["fetchSource"]
+    List<String> transitiveGroups = attributes["transitiveGroups"]
 
-    if (resolveConfiguration == null) {
-      resolveConfiguration = new ResolveConfiguration()
+    if (traversalRules == null) {
+      traversalRules = new TraversalRules()
     }
 
-    resolveConfiguration.with(group, new TypeResolveConfiguration(fetchSource, transitive, transitiveGroups))
+    traversalRules.with(group, new GroupTraversalRule(fetchSource, transitive, transitiveGroups))
   }
 }
