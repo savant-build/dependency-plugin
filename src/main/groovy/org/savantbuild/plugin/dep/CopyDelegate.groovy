@@ -76,6 +76,10 @@ class CopyDelegate extends BaseDependencyDelegate {
     }
 
     ResolvedArtifactGraph resolvedGraph = dependencyService.resolve(project.artifactGraph, project.workflow, traversalRules)
+    if (resolvedGraph.size() == 0) {
+      throw new BuildFailureException("Unable to copy the dependencies [\n${traversalRules}]. It is likely that the dependency groups specified don't exist.")
+    }
+
     int count = 0
     resolvedGraph.traverse(resolvedGraph.root, true, { origin, destination, value, depth ->
       String name = destination.file.getFileName().toString()

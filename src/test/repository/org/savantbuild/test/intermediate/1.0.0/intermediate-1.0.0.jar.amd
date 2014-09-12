@@ -15,10 +15,10 @@
   -->
 <artifact-meta-data license="Apachev2">
   <dependencies>
-    <dependency-group type="compile">
+    <dependency-group name="compile">
       <dependency group="org.savantbuild.test" project="multiple-versions" name="multiple-versions" version="1.1.0" type="jar"/>
     </dependency-group>
-    <dependency-group type="runtime">
+    <dependency-group name="runtime">
       <dependency group="org.savantbuild.test" project="multiple-versions-different-dependencies" name="multiple-versions-different-dependencies" version="1.1.0" type="jar"/>
     </dependency-group>
   </dependencies>

@@ -27,15 +27,15 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.2.0", l
   }
 
   dependencies {
-    group(type: "provided") {
+    group(name: "provided") {
       dependency(id: "org.savantbuild:savant-core:${savantVersion}")
       dependency(id: "org.savantbuild:savant-dependency-management:${savantVersion}")
       dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
     }
-    group(type: "compile") {
+    group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:5.0.3")
     }
-    group(type: "test-compile", export: false) {
+    group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
     }
   }

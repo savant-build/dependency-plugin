@@ -70,11 +70,11 @@ class DependencyPluginTest {
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild.test:multiple-versions:1.0.0"),
-            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0")
+            new Artifact("org.savantbuild.test:multiple-versions:1.0.0", false),
+            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0", false)
         ),
         new DependencyGroup("runtime", true,
-            new Artifact("org.savantbuild.test:intermediate:1.0.0")
+            new Artifact("org.savantbuild.test:intermediate:1.0.0", false)
         )
     )
     project.workflow = new Workflow(
@@ -112,7 +112,8 @@ class DependencyPluginTest {
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}"
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}"
     )
   }
 
@@ -131,6 +132,7 @@ class DependencyPluginTest {
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
             "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}:" +
             project.directory.resolve("foo.jar").toAbsolutePath()
     )
   }
@@ -181,12 +183,12 @@ class DependencyPluginTest {
   public void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild:savant-core:0.2.0-{integration}"),
-            new Artifact("org.apache.commons:commons-compress:1.7"),
+            new Artifact("org.savantbuild:savant-core:0.2.0-{integration}", false),
+            new Artifact("org.apache.commons:commons-compress:1.7", false),
         ),
         new DependencyGroup("test-compile", true,
-            new Artifact("org.testng:testng:6.8.7"),
-            new Artifact("org.apache.commons:commons-compress:1.7")
+            new Artifact("org.testng:testng:6.8.7", false),
+            new Artifact("org.apache.commons:commons-compress:1.7", false)
         )
     )
     project.workflow = new Workflow(

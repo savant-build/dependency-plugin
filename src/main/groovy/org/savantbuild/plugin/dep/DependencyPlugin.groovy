@@ -62,13 +62,16 @@ class DependencyPlugin extends BaseGroovyPlugin {
 
   /**
    * Copies the project's dependencies to a directory. This delegates to the {@link CopyDelegate} via the closure.
-   * The attributes must also contain a "to" directory.
+   * The attributes must also contain a "to" directory. If the "to" directory doesn't exist, it is created by this
+   * method.
    * <p>
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   dependency.copy(to: "build/distributions/lib") {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
+   *   dependency.copy(to: "build/distributions/lib") {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param attributes The named attributes (to is required).
    * @param closure The closure.
@@ -79,7 +82,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
     closure.delegate = delegate
     closure()
 
-    return delegate.copy()
+    int count = delegate.copy()
+    output.info("Copied [${count}] dependencies to [${delegate.to}]")
+    return count
   }
 
   /**
