@@ -26,6 +26,7 @@ import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
 import org.savantbuild.output.SystemOutOutput
 import org.savantbuild.runtime.RuntimeConfiguration
+import org.savantbuild.util.MapBuilder
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
@@ -49,6 +50,8 @@ class DependencyPluginTest {
 
   Project project
 
+  Path cacheDir
+
   @BeforeSuite
   public static void beforeSuite() {
     projectDir = Paths.get("")
@@ -66,7 +69,7 @@ class DependencyPluginTest {
     project.group = "org.savantbuild.test"
     project.name = "dependency-plugin-test"
     project.version = new Version("1.0")
-    project.license = License.Apachev2
+    project.licenses.put(License.ApacheV2_0, null)
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
@@ -77,12 +80,15 @@ class DependencyPluginTest {
             new Artifact("org.savantbuild.test:intermediate:1.0.0", false)
         )
     )
+
+    cacheDir = projectDir.resolve("../savant-dependency-management/test-deps/savant")
+
     project.workflow = new Workflow(
         new FetchWorkflow(output,
-            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+            new CacheProcess(output, cacheDir.toString())
         ),
         new PublishWorkflow(
-            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+            new CacheProcess(output, cacheDir.toString())
         )
     )
   }
@@ -107,13 +113,13 @@ class DependencyPluginTest {
     }
 
     assertEquals(classpath.toString(),
-        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}"
+        "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}"
     )
   }
 
@@ -126,13 +132,13 @@ class DependencyPluginTest {
     }
 
     assertEquals(classpath.toString(),
-        "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
-            "${projectDir.resolve("src/test/repository/org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+            "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}:" +
             project.directory.resolve("foo.jar").toAbsolutePath()
     )
   }
@@ -158,12 +164,12 @@ class DependencyPluginTest {
     FileTools.prune(projectDir.resolve("build/test/integration"))
 
     project.publications.add("main",
-        new Publication(new ReifiedArtifact("group:name:name:1.1.1:jar", License.BSD),
-            new ArtifactMetaData(null, License.BSD), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
+        new Publication(new ReifiedArtifact("group:name:name:1.1.1:jar", MapBuilder.simpleMap(License.BSD_2_Clause, null)),
+            new ArtifactMetaData(null, MapBuilder.simpleMap(License.BSD_2_Clause, null)), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
     )
     project.workflow = new Workflow(
         new FetchWorkflow(output,
-            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+            new CacheProcess(output, cacheDir.toString())
         ),
         new PublishWorkflow(new CacheProcess(output, projectDir.resolve("build/test/integration").toString()))
     )
@@ -194,7 +200,7 @@ class DependencyPluginTest {
     project.workflow = new Workflow(
         new FetchWorkflow(output,
             new CacheProcess(output, null),
-            new CacheProcess(output, projectDir.resolve("src/test/repository").toString())
+            new CacheProcess(output, cacheDir.toString())
         ),
         new PublishWorkflow(
             new CacheProcess(output, null)

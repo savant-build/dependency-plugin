@@ -42,6 +42,8 @@ import java.nio.file.Paths
 class DependencyPlugin extends BaseGroovyPlugin {
   DependencyService dependencyService = new DefaultDependencyService(output)
 
+//  DependencySettings settings = new DependencySettings()
+
   DependencyPlugin(Project project, RuntimeConfiguration runtimeConfiguration, Output output) {
     super(project, runtimeConfiguration, output)
 
@@ -109,6 +111,14 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
+   *
+   * @param closure
+   */
+  void fetchLicenses(Closure closure) {
+
+  }
+
+  /**
    * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
    * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
    * <p>
@@ -150,7 +160,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     for (Publication publication : project.publications.allPublications()) {
       // Change the version of the publication to an integration build
       Version integrationVersion = publication.artifact.version.toIntegrationVersion()
-      ReifiedArtifact artifact = new ReifiedArtifact(publication.artifact.id, integrationVersion, project.license)
+      ReifiedArtifact artifact = new ReifiedArtifact(publication.artifact.id, integrationVersion, project.licenses)
       Publication integrationPublication = new Publication(artifact, publication.metaData, publication.file, publication.sourceFile)
       dependencyService.publish(integrationPublication, project.workflow.publishWorkflow)
     }
