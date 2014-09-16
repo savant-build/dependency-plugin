@@ -125,6 +125,7 @@ class DependencyPluginTest {
 
   @Test
   public void classpathWithPath() throws Exception {
+    FileTools.prune(projectDir.resolve("build/test/licenses"))
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
@@ -210,5 +211,19 @@ class DependencyPluginTest {
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.listUnusedDependencies()
+  }
+
+  @Test
+  void writeLicenses() {
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    plugin.writeLicenses(to: "build/test/licenses")
+
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions/1.1.0/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf/1.0.0/license-GPLV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/integration-build/2.1.1-{integration}/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf1/1.0.0/license-Commercial.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf2/1.0.0/license-OtherNonDistributableOpenSource.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf3/1.0.0/license-ApacheV2_0.txt")))
   }
 }

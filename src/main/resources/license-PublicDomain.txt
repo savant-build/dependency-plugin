@@ -1,0 +1,3 @@
+This project does not have a license and is in the public domain. To learn more about public domain software, read this:
+
+http://opensource.org/faq#public-domain

@@ -31,6 +31,7 @@ import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
 
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -41,8 +42,6 @@ import java.nio.file.Paths
  */
 class DependencyPlugin extends BaseGroovyPlugin {
   DependencyService dependencyService = new DefaultDependencyService(output)
-
-//  DependencySettings settings = new DependencySettings()
 
   DependencyPlugin(Project project, RuntimeConfiguration runtimeConfiguration, Output output) {
     super(project, runtimeConfiguration, output)
@@ -111,11 +110,48 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
+   * Writes out all of the project's licenses to the directory given in the [to] attribute. Here is an example of
+   * calling this method:
+   * <p>
+   * <pre>
+   *   dependency.writeLicenses(to: "build/licenses")
+   * </pre>
    *
-   * @param closure
+   * @param attributes The named attributes (to is required).
    */
-  void fetchLicenses(Closure closure) {
+  void writeLicenses(Map<String, Object> attributes) {
+    if (!GroovyTools.attributesValid(attributes, ["to"], ["to"], [:])) {
+      fail("You must specify the [to] path where the licenses will be written to. It should look like this:\n\n" +
+          "  dependency.writeLicenses(to: \"build/licenses\"")
+    }
 
+    Path toDir = FileTools.toPath(attributes["to"])
+    project.artifactGraph.traverse(project.artifactGraph.root, true, {origin, destination, group, depth ->
+      Path rootDir = project.directory.resolve(toDir)
+      destination.licenses.each({license, text ->
+        Path licenseFile = rootDir.resolve("${destination.id.group.replace(".", "/")}/${destination.id.project}/${destination.version}/license-${license}.txt")
+        if (Files.isRegularFile(licenseFile)) {
+          return
+        }
+
+        if (Files.notExists(licenseFile.getParent())) {
+          Files.createDirectories(licenseFile.getParent())
+        }
+
+        if (text == null) {
+          InputStream is = this.getClass().getResourceAsStream("/license-${license}.txt")
+          if (is == null) {
+            fail("Unable to load license text for [${license}]")
+          }
+
+          Files.copy(is, licenseFile)
+        } else {
+          Files.write(licenseFile, text.getBytes())
+        }
+      })
+
+      return true
+    })
   }
 
   /**
