@@ -141,7 +141,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
         if (text == null) {
           InputStream is = this.getClass().getResourceAsStream("/license-${license}.txt")
           if (is == null) {
-            fail("Unable to load license text for [${license}]")
+            fail("Unable to load [${license}] license text for the dependency [${destination}]")
           }
 
           Files.copy(is, licenseFile)
