@@ -19,6 +19,8 @@ import org.objectweb.asm.*
 import org.objectweb.asm.signature.SignatureReader
 
 /**
+ * ASM MethodVisitor that builds a list of classes used within the method being visited. This is essentially determining
+ * the imports of the Class.
  *
  * @author Brian Pontarelli
  */
@@ -78,6 +80,9 @@ class ImportMethodVisitor extends MethodVisitor {
   @Override
   void visitFieldInsn(int opcode, String owner, String name, String desc) {
 //    println "MV visitFieldInsn desc=${ASMTools.getClassName(desc)}"
+    if (owner) {
+      classes.add(owner)
+    }
     if (desc) {
       classes.add(ASMTools.getClassName(desc))
     }
@@ -86,6 +91,9 @@ class ImportMethodVisitor extends MethodVisitor {
   @Override
   void visitMethodInsn(int opcode, String owner, String name, String desc) {
 //    println "MV visitMethodInsn desc=${ASMTools.getClassName(desc)}"
+    if (owner) {
+      classes.add(owner)
+    }
     if (desc) {
       classes.add(ASMTools.getClassName(desc))
     }
@@ -94,6 +102,9 @@ class ImportMethodVisitor extends MethodVisitor {
   @Override
   void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 //    println "MV visitMethodInsn desc=${ASMTools.getClassName(desc)}"
+    if (owner) {
+      classes.add(owner)
+    }
     if (desc) {
       classes.add(ASMTools.getClassName(desc))
     }

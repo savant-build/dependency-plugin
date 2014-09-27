@@ -14,9 +14,9 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
-
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
+import org.savantbuild.dep.domain.Artifact
 import org.savantbuild.dep.domain.Publication
 import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.dep.domain.ResolvedArtifact
@@ -95,8 +95,10 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   Classpath classpath = dependency.classpath {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
+   *   Classpath classpath = dependency.classpath {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param closure The closure.
    * @return The Classpath.
@@ -107,6 +109,127 @@ class DependencyPlugin extends BaseGroovyPlugin {
     closure()
 
     return delegate.toClasspath()
+  }
+
+  /**
+   * Integrates the project (using the project's defined publications and workflow). If there are no publications, this
+   * does nothing. Otherwise, it builds the integration version from the project's version and then publishes the
+   * publications using the project's workflow.
+   * <p>
+   * Here is an example of calling this method:
+   * <p>
+   * <pre>
+   *   dependency.integrate()
+   * </pre>
+   */
+  void integrate() {
+    if (project.publications.size() == 0) {
+      output.info("Project has no publications defined. Skipping integration")
+    } else {
+      output.info("Integrating project.")
+    }
+
+    for (Publication publication : project.publications.allPublications()) {
+      // Change the version of the publication to an integration build
+      Version integrationVersion = publication.artifact.version.toIntegrationVersion()
+      ReifiedArtifact artifact = new ReifiedArtifact(publication.artifact.id, integrationVersion, project.licenses)
+      Publication integrationPublication = new Publication(artifact, publication.metaData, publication.file, publication.sourceFile)
+      dependencyService.publish(integrationPublication, project.workflow.publishWorkflow)
+    }
+  }
+
+  /**
+   * Determines which of the project's direct dependencies are not being used anymore. This assumes that the groups are
+   * broken down like this:
+   * <p>
+   * Here is an example of calling this method:
+   * <p>
+   * <pre>
+   *   dependency.integrate()
+   * </pre>
+   */
+  Set<ResolvedArtifact> listUnusedDependencies(Map<String, Object> attributes = [:]) {
+    if (!GroovyTools.attributesValid(attributes, ["mainBuildDirectory", "mainDependencyGroups", "testBuildDirectory", "testDependencyGroups"], [], ["mainDependencyGroups": List.class, "testDependencyGroups": List.class])) {
+      fail("Invalid attributes passed to the listUnusedDependencies ${attributes}. The valid attributes are " +
+          "[mainBuildDirectory, mainDependencyGroup, testBuildDirectory, testDependencyGroup].");
+    }
+
+    Path mainBuildDirectory = FileTools.toPath(attributes["mainBuildDirectory"])
+    if (mainBuildDirectory == null) {
+      mainBuildDirectory = Paths.get("build/classes/main")
+    }
+    Path testBuildDirectory = FileTools.toPath(attributes["testBuildDirectory"])
+    if (testBuildDirectory == null) {
+      testBuildDirectory = Paths.get("build/classes/test")
+    }
+    List<String> mainDependencyGroups = attributes["mainDependencyGroups"];
+    if (mainDependencyGroups == null) {
+      mainDependencyGroups = ["compile", "provided"]
+    }
+    List<String> testDependencyGroups = attributes["testDependencyGroup"];
+    if (testDependencyGroups == null) {
+      testDependencyGroups = ["test-compile"]
+    }
+
+    DependencyChecker checker = new DependencyChecker(project, output, this)
+    Set<ResolvedArtifact> unused = checker.check(mainBuildDirectory, mainDependencyGroups)
+    Set<ResolvedArtifact> unusedTest = checker.check(testBuildDirectory, testDependencyGroups)
+    unused.addAll(unusedTest)
+    return unused
+  }
+
+  /**
+   * Locates the location on disk of a single artifact.
+   * <p>
+   * Here is an example of calling this method:
+   * <p>
+   * <pre>
+   *   Path path = dependency.path(id: "org.apache.commons:commons-collection:3.1", group: "compile")
+   * </pre>
+   *
+   * @param attributes The named attributes (id and group are required)
+   * @return The absolute Path to the dependency on disk.
+   */
+  Path path(Map<String, Object> attributes) {
+    if (!GroovyTools.attributesValid(attributes, ["id", "group"], ["id", "group"], ["id": String.class, "group": String.class])) {
+      fail("You must supply the name of the dependency group and the dependency id like this:\n\n" +
+          "  dependency.absolutePath(id: \"foo:bar:1.0\", group: \"compile\")")
+    }
+
+    ResolvedArtifactGraph graph = resolve {
+      dependencies(group: attributes["group"].toString(), transitive: false)
+    }
+
+    String id = attributes["id"].toString()
+    Path path = graph.getPath(new Artifact(id, false).id)
+    if (!path) {
+      fail("Unable to locate the dependency [%s]", id)
+    }
+
+    return path.toAbsolutePath()
+  }
+
+  /**
+   * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
+   * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
+   * <p>
+   * Here is an example of calling this method:
+   * <p>
+   * <pre>
+   *   ResolvedArtifactGraph graph = dependency.resolve {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
+   *
+   * @param closure The Closure.
+   * @return The ResolvedArtifactGraph.
+   */
+  ResolvedArtifactGraph resolve(Closure closure) {
+    ResolveDelegate delegate = new ResolveDelegate(project, dependencyService)
+    closure.delegate = delegate
+    closure()
+
+    return delegate.resolve()
   }
 
   /**
@@ -152,93 +275,5 @@ class DependencyPlugin extends BaseGroovyPlugin {
 
       return true
     })
-  }
-
-  /**
-   * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
-   * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
-   * <p>
-   * Here is an example of calling this method:
-   * <p>
-   * <pre>
-   *   ResolvedArtifactGraph graph = dependency.resolve {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
-   *
-   * @param closure The Closure.
-   * @return The ResolvedArtifactGraph.
-   */
-  ResolvedArtifactGraph resolve(Closure closure) {
-    ResolveDelegate delegate = new ResolveDelegate(project, dependencyService)
-    closure.delegate = delegate
-    closure()
-
-    return delegate.resolve()
-  }
-
-  /**
-   * Integrates the project (using the project's defined publications and workflow). If there are no publications, this
-   * does nothing. Otherwise, it builds the integration version from the project's version and then publishes the
-   * publications using the project's workflow.
-   * <p>
-   * Here is an example of calling this method:
-   * <p>
-   * <pre>
-   *   dependency.integrate()
-   * </pre>
-   */
-  void integrate() {
-    if (project.publications.size() == 0) {
-      output.info("Project has no publications defined. Skipping integration")
-    } else {
-      output.info("Integrating project.")
-    }
-
-    for (Publication publication : project.publications.allPublications()) {
-      // Change the version of the publication to an integration build
-      Version integrationVersion = publication.artifact.version.toIntegrationVersion()
-      ReifiedArtifact artifact = new ReifiedArtifact(publication.artifact.id, integrationVersion, project.licenses)
-      Publication integrationPublication = new Publication(artifact, publication.metaData, publication.file, publication.sourceFile)
-      dependencyService.publish(integrationPublication, project.workflow.publishWorkflow)
-    }
-  }
-
-  /**
-   * Determines which of the project's direct dependencies are not being used anymore. This assumes that the groups are
-   * broken down like this:
-   * <p>
-   * Here is an example of calling this method:
-   * <p>
-   * <pre>
-   *   dependency.integrate()
-   * </pre>
-   */
-  Set<ResolvedArtifact> listUnusedDependencies(Map<String, Object> attributes = [:]) {
-    if (!GroovyTools.attributesValid(attributes, ["mainBuildDirectory", "mainDependencyGroup", "testBuildDirectory", "testDependencyGroup"], [], [:])) {
-      fail("Invalid attributes passed to the listUnusedDependencies ${attributes}. The valid attributes are " +
-          "[mainBuildDirectory, mainDependencyGroup, testBuildDirectory, testDependencyGroup].");
-    }
-
-    Path mainBuildDirectory = FileTools.toPath(attributes["mainBuildDirectory"])
-    if (mainBuildDirectory == null) {
-      mainBuildDirectory = Paths.get("build/classes/main")
-    }
-    Path testBuildDirectory = FileTools.toPath(attributes["testBuildDirectory"])
-    if (testBuildDirectory == null) {
-      testBuildDirectory = Paths.get("build/classes/test")
-    }
-    String mainDependencyGroup = attributes["mainDependencyGroup"];
-    if (mainDependencyGroup == null) {
-      mainDependencyGroup = "compile"
-    }
-    String testDependencyGroup = attributes["testDependencyGroup"];
-    if (testDependencyGroup == null) {
-      testDependencyGroup = "test-compile"
-    }
-
-    DependencyChecker checker = new DependencyChecker(project, output, this)
-    Set<ResolvedArtifact> unused = checker.check(mainBuildDirectory, mainDependencyGroup)
-    Set<ResolvedArtifact> unusedTest = checker.check(testBuildDirectory, testDependencyGroup)
-    unused.addAll(unusedTest)
-    return unused
   }
 }

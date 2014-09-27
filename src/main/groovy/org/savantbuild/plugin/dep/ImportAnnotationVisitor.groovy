@@ -18,6 +18,8 @@ package org.savantbuild.plugin.dep
 import org.objectweb.asm.*
 
 /**
+ * ASM AnnotationVisitor that builds a list of classes used within the annotation being visited. This is essentially
+ * determining the imports of a Class.
  *
  * @author Brian Pontarelli
  */

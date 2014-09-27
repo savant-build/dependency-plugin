@@ -214,6 +214,13 @@ class DependencyPluginTest {
   }
 
   @Test
+  public void path() throws Exception {
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    Path path = plugin.path(id: "org.savantbuild.test:intermediate:1.0.0", group: "runtime")
+    assertEquals(path, cacheDir.resolve("org/savantbuild/test/intermediate/1.0.0/intermediate-1.0.0.jar").toAbsolutePath())
+  }
+
+  @Test
   void writeLicenses() {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.writeLicenses(to: "build/test/licenses")

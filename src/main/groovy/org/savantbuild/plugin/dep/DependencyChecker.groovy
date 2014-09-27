@@ -43,7 +43,7 @@ class DependencyChecker {
     this.plugin = plugin
   }
 
-  Set<ResolvedArtifact> check(Path buildDir, String dependencyGroup) {
+  Set<ResolvedArtifact> check(Path buildDir, List<String> dependencyGroups) {
     Set<String> projectClasses = new HashSet<>()
     Path mainBuildDir = project.directory.resolve(buildDir)
     if (Files.notExists(mainBuildDir)) {
@@ -55,13 +55,16 @@ class DependencyChecker {
         ImportClassVisitor importClassVisitor = new ImportClassVisitor()
         new ClassReader(Files.readAllBytes(path)).accept(importClassVisitor, ClassReader.SKIP_FRAMES)
         projectClasses.addAll(importClassVisitor.classes)
+        output.debug("Class [%s] was processed and depends on the classes %s", path, importClassVisitor.classes)
       }
     })
 
     output.debug("Classes that the project uses are %s", projectClasses)
 
     ResolvedArtifactGraph resolvedArtifactGraph = plugin.resolve() {
-      dependencies(group: dependencyGroup, transitive: false, fetchSource: false)
+      dependencyGroups.each { group ->
+        dependencies(group: group, transitive: false, fetchSource: false)
+      }
     }
 
     Set<ResolvedArtifact> unused = new HashSet<>()

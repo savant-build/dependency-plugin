@@ -21,6 +21,8 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.TypePath
 
 /**
+ * ASM FieldVisitor that builds a list of classes used by the field being visited. This is essentially determining
+ * the imports of a Class.
  *
  * @author Brian Pontarelli
  */

@@ -19,6 +19,8 @@ import org.objectweb.asm.*
 import org.objectweb.asm.signature.SignatureReader
 
 /**
+ * ASM ClassVisitor that builds a list of classes used within the Class being visited. This is essentially determining
+ * the imports of the Class.
  *
  * @author Brian Pontarelli
  */
@@ -85,7 +87,7 @@ class ImportClassVisitor extends ClassVisitor {
     }
 
     Type[] types = Type.getArgumentTypes(desc);
-    for(int i = 0; i < types.length; i++) {
+    for (int i = 0; i < types.length; i++) {
       String argumentClassName = ASMTools.getClassName(types[i])
       if (argumentClassName) {
         classes.add(argumentClassName)

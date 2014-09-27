@@ -19,6 +19,8 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.signature.SignatureVisitor
 
 /**
+ * ASM SignatureVisitor that builds a list of classes used within a generic signature of a method, field, or class.
+ * This is essentially determining the imports of a Class.
  *
  * @author Brian Pontarelli
  */
