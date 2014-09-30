@@ -190,7 +190,7 @@ class DependencyPluginTest {
   public void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild:savant-core:0.2.0-{integration}", false),
+            new Artifact("org.savantbuild:savant-core:0.2.0", false),
             new Artifact("org.apache.commons:commons-compress:1.7", false),
         ),
         new DependencyGroup("test-compile", true,

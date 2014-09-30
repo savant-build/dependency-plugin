@@ -145,7 +145,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   dependency.integrate()
+   *   dependency.listUnusedDependencies()
    * </pre>
    */
   Set<ResolvedArtifact> listUnusedDependencies(Map<String, Object> attributes = [:]) {

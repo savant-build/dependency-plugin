@@ -34,7 +34,7 @@ class ImportMethodVisitor extends MethodVisitor {
 
   @Override
   void visitParameter(String name, int access) {
-    println "MV visitParameter name=${name}"
+//    println "MV visitParameter name=${name}"
   }
 
   @Override
