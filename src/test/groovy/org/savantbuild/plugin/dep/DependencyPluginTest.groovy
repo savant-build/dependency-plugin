@@ -15,7 +15,18 @@
  */
 package org.savantbuild.plugin.dep
 
-import org.savantbuild.dep.domain.*
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+
+import org.savantbuild.dep.domain.Artifact
+import org.savantbuild.dep.domain.ArtifactMetaData
+import org.savantbuild.dep.domain.Dependencies
+import org.savantbuild.dep.domain.DependencyGroup
+import org.savantbuild.dep.domain.License
+import org.savantbuild.dep.domain.Publication
+import org.savantbuild.dep.domain.ReifiedArtifact
+import org.savantbuild.dep.domain.Version
 import org.savantbuild.dep.workflow.FetchWorkflow
 import org.savantbuild.dep.workflow.PublishWorkflow
 import org.savantbuild.dep.workflow.Workflow
@@ -30,10 +41,6 @@ import org.savantbuild.util.MapBuilder
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
-
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertTrue

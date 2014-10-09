@@ -15,9 +15,9 @@ import java.nio.file.Paths
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-savantVersion = "0.2.0"
+savantVersion = "0.3.0-{integration}"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.2.0", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.0", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -34,6 +34,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.2.0", l
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:5.0.3")
+      dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -46,11 +47,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.2.0", l
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:${savantVersion}")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:${savantVersion}")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:${savantVersion}")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:${savantVersion}")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:${savantVersion}")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.2.0")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.2.0")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.2.0")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.2.0")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.2.0")
 
 // Plugin settings
 groovy.settings.groovyVersion = "2.2"
