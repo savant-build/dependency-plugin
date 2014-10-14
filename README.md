@@ -1,5 +1,4 @@
-Dependency Plugin
-============================
+## Dependency Plugin
 
 This plugin provides the basic dependency management features for Savant.
 
