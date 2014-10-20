@@ -17,7 +17,7 @@ import java.nio.file.Paths
  */
 savantVersion = "0.3.0"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.0", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.1", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -34,7 +34,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.0", l
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:5.0.3")
-      dependency(id: "org.savantbuild:savant-io:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-io:0.3.1")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -61,9 +61,10 @@ groovyTestNG.settings.groovyVersion = "2.2"
 groovyTestNG.settings.javaVersion = "1.8"
 idea.settings.imlFile = Paths.get("dependency-plugin.iml")
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:${savantVersion}":"savant-core",
-    "org.savantbuild:savant-dependency-management:${savantVersion}":"savant-dependency-management",
-    "org.savantbuild:savant-utils:${savantVersion}":"savant-utils"
+    "org.savantbuild:savant-core:${savantVersion}"                 : "savant-core",
+    "org.savantbuild:savant-dependency-management:${savantVersion}": "savant-dependency-management",
+    "org.savantbuild:savant-io:0.3.1"                              : "savant-io",
+    "org.savantbuild:savant-utils:${savantVersion}"                : "savant-utils"
 ]
 
 target(name: "clean", description: "Cleans the project") {
