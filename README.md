@@ -1,4 +1,4 @@
-## Dependency Plugin
+## Dependency Plugin ![semver 2.0.0 compliant](http://img.shields.io/badge/semver-2.0.0-brightgreen.svg?style=flat-square)
 
 This plugin provides the basic dependency management features for Savant.
 
