@@ -14,6 +14,7 @@
  * language governing permissions and limitations under the License.
  */
 package org.savantbuild.plugin.dep
+
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.domain.Artifact
@@ -78,7 +79,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * @param closure The closure.
    * @return The number of dependencies copied.
    */
-  int copy(Map<String, Object> attributes, Closure closure) {
+  int copy(Map<String, Object> attributes, @DelegatesTo(CopyDelegate.class) Closure closure) {
     CopyDelegate delegate = new CopyDelegate(attributes, project, dependencyService)
     closure.delegate = delegate
     closure()
@@ -103,7 +104,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * @param closure The closure.
    * @return The Classpath.
    */
-  Classpath classpath(Closure closure) {
+  Classpath classpath(@DelegatesTo(ClasspathDelegate.class) Closure closure) {
     ClasspathDelegate delegate = new ClasspathDelegate(project, dependencyService)
     closure.delegate = delegate
     closure()
@@ -224,7 +225,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * @param closure The Closure.
    * @return The ResolvedArtifactGraph.
    */
-  ResolvedArtifactGraph resolve(Closure closure) {
+  ResolvedArtifactGraph resolve(@DelegatesTo(ResolveDelegate.class) Closure closure) {
     ResolveDelegate delegate = new ResolveDelegate(project, dependencyService)
     closure.delegate = delegate
     closure()
