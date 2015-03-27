@@ -228,6 +228,12 @@ class DependencyPluginTest {
   }
 
   @Test
+  public void printFull() throws Exception {
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    plugin.printFull();
+  }
+
+  @Test
   void writeLicenses() {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.writeLicenses(to: "build/test/licenses")

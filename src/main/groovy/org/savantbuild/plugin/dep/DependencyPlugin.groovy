@@ -17,6 +17,7 @@ package org.savantbuild.plugin.dep
 
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
+import org.savantbuild.dep.DependencyTreePrinter
 import org.savantbuild.dep.domain.Artifact
 import org.savantbuild.dep.domain.Publication
 import org.savantbuild.dep.domain.ReifiedArtifact
@@ -85,7 +86,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     closure()
 
     int count = delegate.copy()
-    output.info("Copied [${count}] dependencies to [${delegate.to}]")
+    output.infoln("Copied [${count}] dependencies to [${delegate.to}]")
     return count
   }
 
@@ -125,9 +126,9 @@ class DependencyPlugin extends BaseGroovyPlugin {
    */
   void integrate() {
     if (project.publications.size() == 0) {
-      output.info("Project has no publications defined. Skipping integration")
+      output.infoln("Project has no publications defined. Skipping integration")
     } else {
-      output.info("Integrating project.")
+      output.infoln("Integrating project.")
     }
 
     for (Publication publication : project.publications.allPublications()) {
@@ -211,6 +212,14 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
+   * Prints out the project dependencies to the output.
+   */
+  void printFull() {
+    DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
+    DependencyTreePrinter.print(output, dependencyGraph, null, null);
+  }
+
+  /**
    * Uses the {@link DependencyService} to resolve the project's dependencies. This invokes the Closure and delegates
    * to a {@link ResolveDelegate}. This method returns the resulting {@link ResolvedArtifactGraph}.
    * <p>
@@ -250,7 +259,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     Path toDir = FileTools.toPath(attributes["to"])
-    project.artifactGraph.traverse(project.artifactGraph.root, true, {origin, destination, group, depth ->
+    project.artifactGraph.traverse(project.artifactGraph.root, true, null, { origin, destination, group, depth, isLast ->
       Path rootDir = project.directory.resolve(toDir)
       destination.licenses.each({license, text ->
         Path licenseFile = rootDir.resolve("${destination.id.group.replace(".", "/")}/${destination.id.project}/${destination.version}/license-${license}.txt")

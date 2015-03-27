@@ -81,7 +81,7 @@ class CopyDelegate extends BaseDependencyDelegate {
     }
 
     int count = 0
-    resolvedGraph.traverse(resolvedGraph.root, true, { origin, destination, value, depth ->
+    resolvedGraph.traverse(resolvedGraph.root, true, null, { origin, destination, value, depth, isLast ->
       String name = destination.file.getFileName().toString()
       if (removeVersion) {
         name = name.replace("-${destination.version}", "")

@@ -1,5 +1,3 @@
-import java.nio.file.Paths
-
 /*
  * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
  *
@@ -15,9 +13,11 @@ import java.nio.file.Paths
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-savantVersion = "0.3.0"
+import java.nio.file.Paths
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.1", licenses: ["ApacheV2_0"]) {
+savantVersion = "0.4.0"
+
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.0", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -34,7 +34,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.3.1", l
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:5.0.3")
-      dependency(id: "org.savantbuild:savant-io:0.3.1")
+      dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -63,7 +63,7 @@ idea.settings.imlFile = Paths.get("dependency-plugin.iml")
 idea.settings.moduleMap = [
     "org.savantbuild:savant-core:${savantVersion}"                 : "savant-core",
     "org.savantbuild:savant-dependency-management:${savantVersion}": "savant-dependency-management",
-    "org.savantbuild:savant-io:0.3.1"                              : "savant-io",
+    "org.savantbuild:savant-io:${savantVersion}"                   : "savant-io",
     "org.savantbuild:savant-utils:${savantVersion}"                : "savant-utils"
 ]
 
