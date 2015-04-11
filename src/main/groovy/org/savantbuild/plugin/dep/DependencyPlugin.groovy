@@ -53,13 +53,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     if (!project.artifactGraph) {
-      try {
-        DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
-        project.artifactGraph = dependencyService.reduce(dependencyGraph)
-      } catch (e) {
-        output.debug(e);
-        fail("Unable to resolve project dependencies. Error message is [%s]", e.toString());
-      }
+      DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
+      project.artifactGraph = dependencyService.reduce(dependencyGraph)
     }
   }
 
