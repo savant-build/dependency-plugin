@@ -15,9 +15,9 @@
  */
 import java.nio.file.Paths
 
-savantVersion = "0.4.3"
+savantVersion = "0.4.4-{integration}"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.3", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.4", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -47,11 +47,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.3", l
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.4.1")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.4.1")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.4.1")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.4.1")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.4.1")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.4.3")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.4.3")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.4.3")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.4.3")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.4.3")
 
 // Plugin settings
 groovy.settings.groovyVersion = "2.2"
