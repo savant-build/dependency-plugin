@@ -15,7 +15,7 @@
  */
 import java.nio.file.Paths
 
-savantVersion = "0.4.4-{integration}"
+savantVersion = "0.4.4"
 
 project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.4", licenses: ["ApacheV2_0"]) {
   workflow {
