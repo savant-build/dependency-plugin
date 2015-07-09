@@ -43,6 +43,7 @@ import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
 
 import static org.testng.Assert.assertEquals
+import static org.testng.Assert.assertNull
 import static org.testng.Assert.assertTrue
 
 /**
@@ -225,6 +226,9 @@ class DependencyPluginTest {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Path path = plugin.path(id: "org.savantbuild.test:intermediate:1.0.0", group: "runtime")
     assertEquals(path, cacheDir.resolve("org/savantbuild/test/intermediate/1.0.0/intermediate-1.0.0.jar").toAbsolutePath())
+
+    path = plugin.path(id: "org.savantbuild.test:bad:1.0.0", group: "runtime")
+    assertNull(path)
   }
 
   @Test

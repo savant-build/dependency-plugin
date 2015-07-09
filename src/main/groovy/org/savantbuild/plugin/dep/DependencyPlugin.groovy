@@ -185,7 +185,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * </pre>
    *
    * @param attributes The named attributes (id and group are required)
-   * @return The absolute Path to the dependency on disk.
+   * @return The absolute Path to the dependency on disk or null if the artifact doesn't exist.
    */
   Path path(Map<String, Object> attributes) {
     if (!GroovyTools.attributesValid(attributes, ["id", "group"], ["id", "group"], ["id": String.class, "group": String.class])) {
@@ -200,7 +200,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     String id = attributes["id"].toString()
     Path path = graph.getPath(new Artifact(id, false).id)
     if (!path) {
-      fail("Unable to locate the dependency [%s]", id)
+      return null
     }
 
     return path.toAbsolutePath()
