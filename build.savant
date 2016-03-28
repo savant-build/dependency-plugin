@@ -77,12 +77,12 @@ target(name: "jar", description: "JARs the project", dependsOn: ["compile"]) {
   groovy.jar()
 }
 
-target(name: "test", description: "Runs the project's tests", dependsOn: ["jar"]) {
-  groovyTestNG.test()
+target(name: "doc", description: "Generates the GroovyDoc", dependsOn: ["compile"]) {
+  groovy.document()
 }
 
-target(name: "doc", description: "Generate the project's JavaDoc", dependsOn: ["jar"]) {
-  groovy.document()
+target(name: "test", description: "Runs the project's tests", dependsOn: ["jar"]) {
+  groovyTestNG.test()
 }
 
 target(name: "int", description: "Releases a local integration build of the project", dependsOn: ["test"]) {
