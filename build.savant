@@ -13,8 +13,6 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-import java.nio.file.Paths
-
 savantVersion = "1.0.0"
 
 project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.0", licenses: ["ApacheV2_0"]) {
@@ -47,11 +45,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.0", l
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.4.4")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.4.4")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.4.4")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.4.4")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.4.4")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:1.0.0")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:1.0.0")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:1.0.0")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:1.0.1")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:1.0.0")
 
 // Plugin settings
 groovy.settings.groovyVersion = "2.4"
@@ -59,7 +57,7 @@ groovy.settings.javaVersion = "1.8"
 groovy.settings.jarManifest["Savant-Plugin-Class"] = "org.savantbuild.plugin.dep.DependencyPlugin"
 groovyTestNG.settings.groovyVersion = "2.4"
 groovyTestNG.settings.javaVersion = "1.8"
-idea.settings.imlFile = Paths.get("dependency-plugin.iml")
+idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
     "org.savantbuild:savant-core:${savantVersion}"                 : "savant-core",
     "org.savantbuild:savant-dependency-management:${savantVersion}": "savant-dependency-management",
