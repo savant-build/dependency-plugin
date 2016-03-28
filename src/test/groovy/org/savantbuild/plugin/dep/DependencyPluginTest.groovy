@@ -31,6 +31,7 @@ import org.savantbuild.dep.workflow.FetchWorkflow
 import org.savantbuild.dep.workflow.PublishWorkflow
 import org.savantbuild.dep.workflow.Workflow
 import org.savantbuild.dep.workflow.process.CacheProcess
+import org.savantbuild.dep.workflow.process.URLProcess
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
 import org.savantbuild.lang.Classpath
@@ -198,7 +199,7 @@ class DependencyPluginTest {
   public void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild:savant-core:0.4.1", false),
+            new Artifact("org.savantbuild:savant-core:0.4.4", false),
             new Artifact("org.apache.commons:commons-compress:1.7", false),
         ),
         new DependencyGroup("test-compile", true,
@@ -209,7 +210,8 @@ class DependencyPluginTest {
     project.workflow = new Workflow(
         new FetchWorkflow(output,
             new CacheProcess(output, null),
-            new CacheProcess(output, cacheDir.toString())
+            new CacheProcess(output, cacheDir.toString()),
+            new URLProcess(output, "http://savant.inversoft.org", null, null)
         ),
         new PublishWorkflow(
             new CacheProcess(output, null)

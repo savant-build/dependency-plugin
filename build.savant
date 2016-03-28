@@ -15,9 +15,9 @@
  */
 import java.nio.file.Paths
 
-savantVersion = "0.4.5-{integration}"
+savantVersion = "1.0.0"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.5", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.0", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -47,17 +47,17 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "0.4.5", l
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.4.3")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.4.3")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.4.3")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.4.3")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.4.3")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:0.4.4")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:0.4.4")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:0.4.4")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:0.4.4")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:0.4.4")
 
 // Plugin settings
-groovy.settings.groovyVersion = "2.2"
+groovy.settings.groovyVersion = "2.4"
 groovy.settings.javaVersion = "1.8"
 groovy.settings.jarManifest["Savant-Plugin-Class"] = "org.savantbuild.plugin.dep.DependencyPlugin"
-groovyTestNG.settings.groovyVersion = "2.2"
+groovyTestNG.settings.groovyVersion = "2.4"
 groovyTestNG.settings.javaVersion = "1.8"
 idea.settings.imlFile = Paths.get("dependency-plugin.iml")
 idea.settings.moduleMap = [
