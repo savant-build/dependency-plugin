@@ -15,7 +15,7 @@
  */
 savantVersion = "1.0.0"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.1", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.2", licenses: ["ApacheV2_0"]) {
   workflow {
     standard()
   }
@@ -31,8 +31,8 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "1.0.1", l
       dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
     }
     group(name: "compile") {
-      dependency(id: "org.ow2.asm:asm:5.0.3")
-      dependency(id: "org.savantbuild:savant-io:1.0.1")
+      dependency(id: "org.ow2.asm:asm:6.1.1")
+      dependency(id: "org.savantbuild:savant-io:1.0.3")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -61,7 +61,7 @@ idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
     "org.savantbuild:savant-core:${savantVersion}"                 : "savant-core",
     "org.savantbuild:savant-dependency-management:${savantVersion}": "savant-dependency-management",
-    "org.savantbuild:savant-io:1.0.1"                              : "savant-io",
+    "org.savantbuild:savant-io:1.0.3"                              : "savant-io",
     "org.savantbuild:savant-utils:${savantVersion}"                : "savant-utils"
 ]
 
