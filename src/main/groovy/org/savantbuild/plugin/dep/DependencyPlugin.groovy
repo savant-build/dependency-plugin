@@ -15,6 +15,10 @@
  */
 package org.savantbuild.plugin.dep
 
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
 import org.savantbuild.dep.DependencyTreePrinter
@@ -32,10 +36,6 @@ import org.savantbuild.output.Output
 import org.savantbuild.parser.groovy.GroovyTools
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
-
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 /**
  * Dependency plugin.
@@ -211,7 +211,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
    */
   void printFull() {
     DependencyGraph dependencyGraph = dependencyService.buildGraph(project.toArtifact(), project.dependencies, project.workflow)
-    DependencyTreePrinter.print(output, dependencyGraph, null, null);
+    DependencyTreePrinter.print(output, dependencyGraph, null, null)
   }
 
   /**
