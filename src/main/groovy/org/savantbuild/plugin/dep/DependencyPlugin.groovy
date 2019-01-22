@@ -66,10 +66,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   dependency.copy(to: "build/distributions/lib") {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *   dependency.copy(to: "build/distributions/lib") {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *}* </pre>
    *
    * @param attributes The named attributes (to is required).
    * @param closure The closure.
@@ -92,10 +90,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   Classpath classpath = dependency.classpath {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *   Classpath classpath = dependency.classpath {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *}* </pre>
    *
    * @param closure The closure.
    * @return The Classpath.
@@ -221,10 +217,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   ResolvedArtifactGraph graph = dependency.resolve {
-   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *   }
-   * </pre>
+   *   ResolvedArtifactGraph graph = dependency.resolve {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *}* </pre>
    *
    * @param closure The Closure.
    * @return The ResolvedArtifactGraph.
@@ -248,15 +242,29 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * @param attributes The named attributes (to is required).
    */
   void writeLicenses(Map<String, Object> attributes) {
-    if (!GroovyTools.attributesValid(attributes, ["to"], ["to"], [:])) {
+    if (!GroovyTools.attributesValid(attributes, ["to", "groups"], ["to"], [:])) {
       fail("You must specify the [to] path where the licenses will be written to. It should look like this:\n\n" +
           "  dependency.writeLicenses(to: \"build/licenses\"")
     }
 
     Path toDir = FileTools.toPath(attributes["to"])
-    project.artifactGraph.traverse(project.artifactGraph.root, true, null, { origin, destination, group, depth, isLast ->
+
+    // Capture groups the user wants to include
+    String[] groups = attributes["groups"]
+    Set<String> groupSet = new HashSet<>()
+    if (groups != null) {
+      groupSet.addAll(Arrays.asList(groups))
+    }
+
+    project.artifactGraph.traverse(project.artifactGraph.root, false, null, { origin, destination, group, depth, isLast ->
+      // Skip this node and stop traversing down that part of the graph if the group isn't wanted
+      if (groupSet.size() > 0 && !groupSet.contains(group)) {
+        println "Skipping ${origin} -> ${destination} : ${group}"
+        return false
+      }
+
       Path rootDir = project.directory.resolve(toDir)
-      destination.licenses.each({license, text ->
+      destination.licenses.each({ license, text ->
         Path licenseFile = rootDir.resolve("${destination.id.group.replace(".", "/")}/${destination.id.project}/${destination.version}/license-${license}.txt")
         if (Files.isRegularFile(licenseFile)) {
           return
