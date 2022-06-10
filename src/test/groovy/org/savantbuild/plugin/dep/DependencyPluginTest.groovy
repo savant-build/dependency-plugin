@@ -213,7 +213,7 @@ class DependencyPluginTest {
         new FetchWorkflow(output,
             new CacheProcess(output, null),
             new CacheProcess(output, cacheDir.toString()),
-            new URLProcess(output, "http://savant.inversoft.org", null, null)
+            new URLProcess(output, "https://repository.savantbuild.org", null, null)
         ),
         new PublishWorkflow(
             new CacheProcess(output, null)
