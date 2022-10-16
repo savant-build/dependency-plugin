@@ -15,7 +15,7 @@
  */
 savantVersion = "1.0.0"
 
-project(group: "org.savantbuild.plugin", name: "dependency", version: "1.1.0", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "1.2.0", licenses: ["ApacheV2_0"]) {
   workflow {
     fetch {
       cache()
@@ -32,9 +32,9 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "1.1.0", l
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:${savantVersion}")
-      dependency(id: "org.savantbuild:savant-dependency-management:${savantVersion}")
-      dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-core:1.0.2")
+      dependency(id: "org.savantbuild:savant-dependency-management:1.0.0")
+      dependency(id: "org.savantbuild:savant-utils:1.0.0")
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:6.1.1")

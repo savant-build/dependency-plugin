@@ -76,6 +76,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
   int copy(Map<String, Object> attributes, @DelegatesTo(CopyDelegate.class) Closure closure) {
     CopyDelegate delegate = new CopyDelegate(attributes, project, dependencyService)
     closure.delegate = delegate
+    closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
 
     int count = delegate.copy()
@@ -99,6 +100,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
   Classpath classpath(@DelegatesTo(ClasspathDelegate.class) Closure closure) {
     ClasspathDelegate delegate = new ClasspathDelegate(project, dependencyService)
     closure.delegate = delegate
+    closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
 
     return delegate.toClasspath()
@@ -144,7 +146,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
   Set<ResolvedArtifact> listUnusedDependencies(Map<String, Object> attributes = [:]) {
     if (!GroovyTools.attributesValid(attributes, ["mainBuildDirectory", "mainDependencyGroups", "testBuildDirectory", "testDependencyGroups"], [], ["mainDependencyGroups": List.class, "testDependencyGroups": List.class])) {
       fail("Invalid attributes passed to the listUnusedDependencies ${attributes}. The valid attributes are " +
-          "[mainBuildDirectory, mainDependencyGroup, testBuildDirectory, testDependencyGroup].");
+          "[mainBuildDirectory, mainDependencyGroup, testBuildDirectory, testDependencyGroup].")
     }
 
     Path mainBuildDirectory = FileTools.toPath(attributes["mainBuildDirectory"])
@@ -155,11 +157,11 @@ class DependencyPlugin extends BaseGroovyPlugin {
     if (testBuildDirectory == null) {
       testBuildDirectory = Paths.get("build/classes/test")
     }
-    List<String> mainDependencyGroups = attributes["mainDependencyGroups"];
+    List<String> mainDependencyGroups = attributes["mainDependencyGroups"]
     if (mainDependencyGroups == null) {
       mainDependencyGroups = ["compile", "provided"]
     }
-    List<String> testDependencyGroups = attributes["testDependencyGroup"];
+    List<String> testDependencyGroups = attributes["testDependencyGroup"]
     if (testDependencyGroups == null) {
       testDependencyGroups = ["test-compile"]
     }
@@ -226,6 +228,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
   ResolvedArtifactGraph resolve(@DelegatesTo(ResolveDelegate.class) Closure closure) {
     ResolveDelegate delegate = new ResolveDelegate(project, dependencyService)
     closure.delegate = delegate
+    closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
 
     return delegate.resolve()
@@ -282,7 +285,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
 
           Files.copy(is, licenseFile)
         } else {
-          Files.write(licenseFile, text.getBytes())
+          licenseFile << text
         }
       })
 
