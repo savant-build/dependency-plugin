@@ -16,26 +16,26 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.savant/cache/org/codehaus/groovy/groovy/2.4.6/groovy-all-indy-2.4.6.jar!/" />
+          <root url="jar://$USER_HOME$/.savant/cache/org/apache/groovy/groovy-xml/4.0.5/groovy-xml-4.0.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.savant/cache/org/codehaus/groovy/groovy/2.4.6/groovy-all-indy-2.4.6-src.jar!/" />
+          <root url="jar://$USER_HOME$/.savant/cache/org/apache/groovy/groovy-xml/4.0.5/groovy-xml-4.0.5-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/apache/groovy/groovy/4.0.5/groovy-4.0.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.savant/cache/org/apache/groovy/groovy/4.0.5/groovy-4.0.5-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="savant-dependency-management" scope="PROVIDED" />
-    <orderEntry type="module-library" scope="PROVIDED">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.savant/cache/ch/ethz/ganymed/ganymed-ssh2/261.0.0/ganymed-ssh2-261.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.savant/cache/ch/ethz/ganymed/ganymed-ssh2/261.0.0/ganymed-ssh2-261.0.0-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="savant-utils" scope="PROVIDED" />
     <orderEntry type="module-library">
       <library>
