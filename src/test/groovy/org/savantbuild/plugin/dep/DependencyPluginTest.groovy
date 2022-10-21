@@ -26,27 +26,26 @@ import org.savantbuild.dep.domain.DependencyGroup
 import org.savantbuild.dep.domain.License
 import org.savantbuild.dep.domain.Publication
 import org.savantbuild.dep.domain.ReifiedArtifact
-import org.savantbuild.dep.domain.Version
 import org.savantbuild.dep.workflow.FetchWorkflow
 import org.savantbuild.dep.workflow.PublishWorkflow
 import org.savantbuild.dep.workflow.Workflow
 import org.savantbuild.dep.workflow.process.CacheProcess
 import org.savantbuild.dep.workflow.process.URLProcess
 import org.savantbuild.domain.Project
+import org.savantbuild.domain.Version
 import org.savantbuild.io.FileTools
 import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
 import org.savantbuild.output.SystemOutOutput
 import org.savantbuild.runtime.RuntimeConfiguration
-import org.savantbuild.util.MapBuilder
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
 
 import static org.testng.Assert.assertEquals
+import static org.testng.Assert.assertFalse
 import static org.testng.Assert.assertNull
 import static org.testng.Assert.assertTrue
-import static org.testng.Assert.assertFalse
 
 /**
  * Tests the groovy plugin.
@@ -79,7 +78,7 @@ class DependencyPluginTest {
     project.group = "org.savantbuild.test"
     project.name = "dependency-plugin-test"
     project.version = new Version("1.0")
-    project.licenses.put(License.ApacheV2_0, null)
+    project.licenses.add(License.parse("Apache-2.0", null))
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
@@ -104,7 +103,7 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void classpathWithNoDependencies() throws Exception {
+  void classpathWithNoDependencies() throws Exception {
     project.dependencies = null
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
@@ -116,7 +115,7 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void classpathWithDependencies() throws Exception {
+  void classpathWithDependencies() throws Exception {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Classpath classpath = plugin.classpath {
       dependencies(group: "compile", transitive: true, fetchSource: true)
@@ -134,7 +133,7 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void classpathWithPath() throws Exception {
+  void classpathWithPath() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/licenses"))
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
@@ -156,7 +155,7 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void copy() throws Exception {
+  void copy() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/copy"))
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
@@ -172,12 +171,12 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void integrate() throws Exception {
+  void integrate() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/integration"))
 
     project.publications.add("main",
-        new Publication(new ReifiedArtifact("group:name:name:1.1.1:jar", MapBuilder.simpleMap(License.BSD_2_Clause, null)),
-            new ArtifactMetaData(null, MapBuilder.simpleMap(License.BSD_2_Clause, null)), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
+        new Publication(new ReifiedArtifact("group:name:name:1.1.1:jar", [License.parse("BSD_2_Clause", null)]),
+            new ArtifactMetaData(null, [License.parse("BSD_2_Clause", null)]), projectDir.resolve("LICENSE"), projectDir.resolve("README.md"))
     )
     project.workflow = new Workflow(
         new FetchWorkflow(output,
@@ -198,7 +197,7 @@ class DependencyPluginTest {
   }
 
   @Test(enabled = true)
-  public void listUnusedDependencies() {
+  void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
             new Artifact("org.savantbuild:savant-core:0.4.4", false),
@@ -226,7 +225,7 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void path() throws Exception {
+  void path() throws Exception {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     Path path = plugin.path(id: "org.savantbuild.test:intermediate:1.0.0", group: "runtime")
     assertEquals(path, cacheDir.resolve("org/savantbuild/test/intermediate/1.0.0/intermediate-1.0.0.jar").toAbsolutePath())
@@ -236,9 +235,9 @@ class DependencyPluginTest {
   }
 
   @Test
-  public void printFull() throws Exception {
+  void printFull() throws Exception {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
-    plugin.printFull();
+    plugin.printFull()
   }
 
   @Test
@@ -248,14 +247,14 @@ class DependencyPluginTest {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.writeLicenses(to: "build/test/licenses")
 
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions/1.1.0/license-ApacheV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf/1.0.0/license-GPLV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/integration-build/2.1.1-{integration}/license-ApacheV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions/1.1.0/license-Apache-2.0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf/1.0.0/license-GPL-2.0-only.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/integration-build/2.1.1-{integration}/license-Apache-2.0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/license-Apache-2.0.txt")))
     assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf1/1.0.0/license-Commercial.txt")))
     assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf2/1.0.0/license-OtherNonDistributableOpenSource.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf3/1.0.0/license-ApacheV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/intermediate/1.0.0/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf3/1.0.0/license-Apache-2.0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/intermediate/1.0.0/license-Apache-2.0.txt")))
   }
 
   @Test
@@ -265,13 +264,13 @@ class DependencyPluginTest {
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     plugin.writeLicenses(to: "build/test/licenses", groups: ["compile"])
 
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions/1.1.0/license-ApacheV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf/1.0.0/license-GPLV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/integration-build/2.1.1-{integration}/license-ApacheV2_0.txt")))
-    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/license-ApacheV2_0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions/1.1.0/license-Apache-2.0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf/1.0.0/license-GPL-2.0-only.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/integration-build/2.1.1-{integration}/license-Apache-2.0.txt")))
+    assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/license-Apache-2.0.txt")))
     assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf1/1.0.0/license-Commercial.txt")))
     assertTrue(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf2/1.0.0/license-OtherNonDistributableOpenSource.txt")))
-    assertFalse(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf3/1.0.0/license-ApacheV2_0.txt")))
-    assertFalse(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/intermediate/1.0.0/license-ApacheV2_0.txt")))
+    assertFalse(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/leaf3/1.0.0/license-Apache-2.0.txt")))
+    assertFalse(Files.isRegularFile(project.directory.resolve("build/test/licenses/org/savantbuild/test/intermediate/1.0.0/license-Apache-2.0.txt")))
   }
 }

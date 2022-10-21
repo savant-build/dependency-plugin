@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.1", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.2", licenses: ["ApacheV2_0"]) {
   workflow {
     fetch {
       cache()
@@ -30,13 +30,14 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.1")
-      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.1")
-      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.1")
+      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.2")
+      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.2")
+      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.2")
+      dependency(id: "org.savantbuild:savant-version:2.0.0-RC.2")
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:6.1.1")
-      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.1")
+      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.2")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -63,10 +64,10 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "1.8"
 idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:2.0.0-RC.1"                 : "savant-core",
-    "org.savantbuild:savant-dependency-management:2.0.0-RC.1": "savant-dependency-management",
-    "org.savantbuild:savant-io:2.0.0-RC.1"                   : "savant-io",
-    "org.savantbuild:savant-utils:2.0.0-RC.1"                : "savant-utils"
+    "org.savantbuild:savant-core:2.0.0-RC.2"                 : "savant-core",
+    "org.savantbuild:savant-dependency-management:2.0.0-RC.2": "savant-dependency-management",
+    "org.savantbuild:savant-io:2.0.0-RC.2"                   : "savant-io",
+    "org.savantbuild:savant-utils:2.0.0-RC.2"                : "savant-utils"
 ]
 
 target(name: "clean", description: "Cleans the project") {

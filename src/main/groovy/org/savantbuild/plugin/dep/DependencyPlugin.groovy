@@ -26,10 +26,10 @@ import org.savantbuild.dep.domain.Artifact
 import org.savantbuild.dep.domain.Publication
 import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.dep.domain.ResolvedArtifact
-import org.savantbuild.dep.domain.Version
 import org.savantbuild.dep.graph.DependencyGraph
 import org.savantbuild.dep.graph.ResolvedArtifactGraph
 import org.savantbuild.domain.Project
+import org.savantbuild.domain.Version
 import org.savantbuild.io.FileTools
 import org.savantbuild.lang.Classpath
 import org.savantbuild.output.Output
@@ -267,8 +267,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
       }
 
       Path rootDir = project.directory.resolve(toDir)
-      destination.licenses.each({ license, text ->
-        Path licenseFile = rootDir.resolve("${destination.id.group.replace(".", "/")}/${destination.id.project}/${destination.version}/license-${license}.txt")
+      destination.licenses.each({ license ->
+        Path licenseFile = rootDir.resolve("${destination.id.group.replace(".", "/")}/${destination.id.project}/${destination.version}/license-${license.identifier}.txt")
         if (Files.isRegularFile(licenseFile)) {
           return
         }
@@ -277,16 +277,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
           Files.createDirectories(licenseFile.getParent())
         }
 
-        if (text == null) {
-          InputStream is = this.getClass().getResourceAsStream("/license-${license}.txt")
-          if (is == null) {
-            fail("Unable to load [${license}] license text for the dependency [${destination}]")
-          }
-
-          Files.copy(is, licenseFile)
-        } else {
-          licenseFile << text
-        }
+        licenseFile << license.text
       })
 
       return true
