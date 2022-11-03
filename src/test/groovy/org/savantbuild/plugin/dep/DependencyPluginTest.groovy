@@ -70,7 +70,7 @@ class DependencyPluginTest {
   }
 
   @BeforeMethod
-  public void beforeMethod() {
+  void beforeMethod() {
     output = new SystemOutOutput(true)
 //    output.enableDebug()
 

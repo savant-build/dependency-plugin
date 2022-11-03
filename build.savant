@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.2", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.4", licenses: ["ApacheV2_0"]) {
   workflow {
     fetch {
       cache()
@@ -30,14 +30,14 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.2")
-      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.2")
-      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.2")
-      dependency(id: "org.savantbuild:savant-version:2.0.0-RC.2")
+      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.4.{integration}")
+      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.4.{integration}")
+      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.4.{integration}")
+      dependency(id: "org.savantbuild:savant-version:2.0.0-RC.4.{integration}")
     }
     group(name: "compile") {
-      dependency(id: "org.ow2.asm:asm:6.1.1")
-      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.2")
+      dependency(id: "org.ow2.asm:asm:9.2.0")
+      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.4.{integration}")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -50,11 +50,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.1")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.1")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.1")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.1")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.1")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.2")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.2")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.2")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.2")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.2")
 
 // Plugin settings
 groovy.settings.groovyVersion = "4.0"
@@ -64,10 +64,10 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "1.8"
 idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:2.0.0-RC.2"                 : "savant-core",
-    "org.savantbuild:savant-dependency-management:2.0.0-RC.2": "savant-dependency-management",
-    "org.savantbuild:savant-io:2.0.0-RC.2"                   : "savant-io",
-    "org.savantbuild:savant-utils:2.0.0-RC.2"                : "savant-utils"
+    "org.savantbuild:savant-core:2.0.0-RC.4.{integration}"                 : "savant-core",
+    "org.savantbuild:savant-dependency-management:2.0.0-RC.4.{integration}": "savant-dependency-management",
+    "org.savantbuild:savant-io:2.0.0-RC.4.{integration}"                   : "savant-io",
+    "org.savantbuild:savant-utils:2.0.0-RC.4.{integration}"                : "savant-utils"
 ]
 
 target(name: "clean", description: "Cleans the project") {
