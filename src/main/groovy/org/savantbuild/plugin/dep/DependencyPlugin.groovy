@@ -196,7 +196,7 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     String id = attributes["id"].toString()
-    Path path = graph.getPath(new Artifact(id, false).id)
+    Path path = graph.getPath(new Artifact(id).id)
     if (!path) {
       return null
     }

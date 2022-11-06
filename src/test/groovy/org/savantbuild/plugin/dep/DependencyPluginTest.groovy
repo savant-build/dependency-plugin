@@ -82,11 +82,11 @@ class DependencyPluginTest {
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild.test:multiple-versions:1.0.0", false),
-            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0", false)
+            new Artifact("org.savantbuild.test:multiple-versions:1.0.0"),
+            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0")
         ),
         new DependencyGroup("runtime", true,
-            new Artifact("org.savantbuild.test:intermediate:1.0.0", false)
+            new Artifact("org.savantbuild.test:intermediate:1.0.0")
         )
     )
 
@@ -200,12 +200,12 @@ class DependencyPluginTest {
   void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild:savant-core:0.4.4", false),
-            new Artifact("org.apache.commons:commons-compress:1.7", false),
+            new Artifact("org.savantbuild:savant-core:0.4.4"),
+            new Artifact("org.apache.commons:commons-compress:1.7"),
         ),
         new DependencyGroup("test-compile", true,
-            new Artifact("org.testng:testng:6.8.7", false),
-            new Artifact("org.apache.commons:commons-compress:1.7", false)
+            new Artifact("org.testng:testng:6.8.7"),
+            new Artifact("org.apache.commons:commons-compress:1.7")
         )
     )
     project.workflow = new Workflow(
