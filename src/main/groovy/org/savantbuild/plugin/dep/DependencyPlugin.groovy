@@ -21,8 +21,11 @@ import java.nio.file.Paths
 
 import org.savantbuild.dep.DefaultDependencyService
 import org.savantbuild.dep.DependencyService
+import org.savantbuild.dep.DependencyTools
 import org.savantbuild.dep.DependencyTreePrinter
 import org.savantbuild.dep.domain.Artifact
+import org.savantbuild.dep.domain.ArtifactID
+import org.savantbuild.dep.domain.License
 import org.savantbuild.dep.domain.Publication
 import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.dep.domain.ResolvedArtifact
@@ -59,6 +62,50 @@ class DependencyPlugin extends BaseGroovyPlugin {
   }
 
   /**
+   * Analyzes the projects dependencies to determine if any invalid licenses exist.
+   * <p>
+   * <pre>
+   *   license.analyze(invalidLicenses: ["GPL-2.0"], ignoredIDs: ["com.mysql:mysql-jdbc-connector:*:*"])
+   * </pre>
+   */
+  void analyzeLicenses(Map<String, Object> attributes) {
+    List<String> invalidLicensesNames = GroovyTools.toListOfStrings(attributes.get("invalidLicenses"))
+    List<String> ignoredIDSepcifications = GroovyTools.toListOfStrings(attributes.get("ignoredIDs"))
+
+    List<License> invalidLicenses = []
+    if (invalidLicensesNames != null && invalidLicenses.size() > 0) {
+      invalidLicenses = invalidLicensesNames.collect { id -> License.parse(id, null) }
+    } else {
+      invalidLicenses = [
+          License.parse("GPL-1.0-only", null), License.parse("GPL-1.0-or-later", null),
+          License.parse("GPL-2.0-only", null), License.parse("GPL-2.0-or-later", null),
+          License.parse("GPL-3.0-only", null), License.parse("GPL-3.0-or-later", null)
+      ]
+    }
+
+    List<ArtifactID> ignoredIDs = []
+    if (ignoredIDSepcifications != null && ignoredIDSepcifications.size() > 0) {
+      ignoredIDs = ignoredIDSepcifications.collect { id -> new ArtifactID(id) }
+    }
+
+    output.infoln("Analyzing licenses in dependencies to locate ${invalidLicenses}")
+
+    project.artifactGraph.traverse(project.artifactGraph.root, false, null, { origin, destination, group, depth, isLast ->
+      boolean ignored = ignoredIDs.any { id -> DependencyTools.matchesExclusion(destination.id, id) }
+      if (ignored) {
+        return true
+      }
+
+      License invalid = destination.licenses.find { license -> invalidLicenses.contains(license) }
+      if (invalid != null) {
+        fail("Your project contains a dependency [${destination}] with an invalid license [${invalid}]")
+      }
+
+      return true
+    })
+  }
+
+  /**
    * Copies the project's dependencies to a directory. This delegates to the {@link CopyDelegate} via the closure.
    * The attributes must also contain a "to" directory. If the "to" directory doesn't exist, it is created by this
    * method.
@@ -66,8 +113,10 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   dependency.copy(to: "build/distributions/lib") {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
+   *   dependency.copy(to: "build/distributions/lib") {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param attributes The named attributes (to is required).
    * @param closure The closure.
@@ -91,8 +140,10 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   Classpath classpath = dependency.classpath {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
+   *   Classpath classpath = dependency.classpath {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param closure The closure.
    * @return The Classpath.
@@ -219,8 +270,10 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Here is an example of calling this method:
    * <p>
    * <pre>
-   *   ResolvedArtifactGraph graph = dependency.resolve {*     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
-   *}* </pre>
+   *   ResolvedArtifactGraph graph = dependency.resolve {
+   *     dependencies(group: "compile", transitive: true, fetchSource: true, transitiveGroups: ["compile", "runtime"])
+   *   }
+   * </pre>
    *
    * @param closure The Closure.
    * @return The ResolvedArtifactGraph.

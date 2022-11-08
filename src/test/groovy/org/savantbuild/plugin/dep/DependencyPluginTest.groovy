@@ -46,6 +46,7 @@ import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertFalse
 import static org.testng.Assert.assertNull
 import static org.testng.Assert.assertTrue
+import static org.testng.Assert.fail
 
 /**
  * Tests the groovy plugin.
@@ -67,6 +68,28 @@ class DependencyPluginTest {
     if (!Files.isRegularFile(projectDir.resolve("LICENSE"))) {
       projectDir = Paths.get("../dependency-plugin")
     }
+  }
+
+  @Test
+  void analyzeLicenses() {
+    FileTools.prune(projectDir.resolve("build/test/licenses"))
+
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    try {
+      plugin.analyzeLicenses([:])
+      fail("Expected the analyze to throw an exception")
+    } catch (Exception e) {
+      // Expected
+    }
+
+    try {
+      plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"])
+      fail("Expected the analyze to throw an exception")
+    } catch (Exception e) {
+      // Expected
+    }
+
+    plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"], ignoredIDs: ["org.savantbuild.test:leaf:*:*"])
   }
 
   @BeforeMethod
