@@ -69,8 +69,12 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * </pre>
    */
   void analyzeLicenses(Map<String, Object> attributes) {
-    List<String> invalidLicensesNames = GroovyTools.toListOfStrings(attributes.get("invalidLicenses"))
-    List<String> ignoredIDSepcifications = GroovyTools.toListOfStrings(attributes.get("ignoredIDs"))
+    List<String> invalidLicensesNames = null
+    List<String> ignoredIDSSpecifications = null
+    if (attributes != null) {
+      invalidLicensesNames = GroovyTools.toListOfStrings(attributes.get("invalidLicenses"))
+      ignoredIDSSpecifications = GroovyTools.toListOfStrings(attributes.get("ignoredIDs"))
+    }
 
     List<License> invalidLicenses = []
     if (invalidLicensesNames != null && invalidLicenses.size() > 0) {
@@ -84,8 +88,8 @@ class DependencyPlugin extends BaseGroovyPlugin {
     }
 
     List<ArtifactID> ignoredIDs = []
-    if (ignoredIDSepcifications != null && ignoredIDSepcifications.size() > 0) {
-      ignoredIDs = ignoredIDSepcifications.collect { id -> new ArtifactID(id) }
+    if (ignoredIDSSpecifications != null && ignoredIDSSpecifications.size() > 0) {
+      ignoredIDs = ignoredIDSSpecifications.collect { id -> new ArtifactID(id) }
     }
 
     output.infoln("Analyzing licenses in dependencies to locate ${invalidLicenses}")

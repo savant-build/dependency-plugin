@@ -83,6 +83,13 @@ class DependencyPluginTest {
     }
 
     try {
+      plugin.analyzeLicenses(null)
+      fail("Expected the analyze to throw an exception")
+    } catch (Exception e) {
+      // Expected
+    }
+
+    try {
       plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"])
       fail("Expected the analyze to throw an exception")
     } catch (Exception e) {
