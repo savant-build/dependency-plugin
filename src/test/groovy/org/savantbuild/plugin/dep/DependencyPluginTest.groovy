@@ -62,7 +62,7 @@ class DependencyPluginTest {
   Path cacheDir
 
   @BeforeSuite
-  public static void beforeSuite() {
+  static void beforeSuite() {
     projectDir = Paths.get("")
     if (!Files.isRegularFile(projectDir.resolve("LICENSE"))) {
       projectDir = Paths.get("../dependency-plugin")
@@ -70,7 +70,7 @@ class DependencyPluginTest {
   }
 
   @BeforeMethod
-  public void beforeMethod() {
+  void beforeMethod() {
     output = new SystemOutOutput(true)
 //    output.enableDebug()
 
@@ -82,11 +82,11 @@ class DependencyPluginTest {
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild.test:multiple-versions:1.0.0", false),
-            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0", false)
+            new Artifact("org.savantbuild.test:multiple-versions:1.0.0"),
+            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0")
         ),
         new DependencyGroup("runtime", true,
-            new Artifact("org.savantbuild.test:intermediate:1.0.0", false)
+            new Artifact("org.savantbuild.test:intermediate:1.0.0")
         )
     )
 
@@ -98,7 +98,8 @@ class DependencyPluginTest {
         ),
         new PublishWorkflow(
             new CacheProcess(output, cacheDir.toString())
-        )
+        ),
+        output
     )
   }
 
@@ -182,7 +183,10 @@ class DependencyPluginTest {
         new FetchWorkflow(output,
             new CacheProcess(output, cacheDir.toString())
         ),
-        new PublishWorkflow(new CacheProcess(output, projectDir.resolve("build/test/integration").toString()))
+        new PublishWorkflow(
+            new CacheProcess(output, projectDir.resolve("build/test/integration").toString())
+        ),
+        output
     )
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
@@ -200,12 +204,12 @@ class DependencyPluginTest {
   void listUnusedDependencies() {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
-            new Artifact("org.savantbuild:savant-core:0.4.4", false),
-            new Artifact("org.apache.commons:commons-compress:1.7", false),
+            new Artifact("org.savantbuild:savant-core:0.4.4"),
+            new Artifact("org.apache.commons:commons-compress:1.7"),
         ),
         new DependencyGroup("test-compile", true,
-            new Artifact("org.testng:testng:6.8.7", false),
-            new Artifact("org.apache.commons:commons-compress:1.7", false)
+            new Artifact("org.testng:testng:6.8.7"),
+            new Artifact("org.apache.commons:commons-compress:1.7")
         )
     )
     project.workflow = new Workflow(
@@ -216,7 +220,8 @@ class DependencyPluginTest {
         ),
         new PublishWorkflow(
             new CacheProcess(output, null)
-        )
+        ),
+        output
     )
 //    output.enableDebug()
 
