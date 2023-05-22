@@ -50,11 +50,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.4")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.4")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.4")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.4")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.4")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.6")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.6")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.6")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.6")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.6")
 
 // Plugin settings
 groovy.settings.groovyVersion = "4.0"
