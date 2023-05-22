@@ -62,6 +62,8 @@ class DependencyPluginTest {
 
   Path cacheDir
 
+  Path integrationDir
+
   @BeforeSuite
   static void beforeSuite() {
     projectDir = Paths.get("")
@@ -78,21 +80,21 @@ class DependencyPluginTest {
     try {
       plugin.analyzeLicenses([:])
       fail("Expected the analyze to throw an exception")
-    } catch (Exception e) {
+    } catch (Exception ignore) {
       // Expected
     }
 
     try {
       plugin.analyzeLicenses(null)
       fail("Expected the analyze to throw an exception")
-    } catch (Exception e) {
+    } catch (Exception ignore) {
       // Expected
     }
 
     try {
       plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"])
       fail("Expected the analyze to throw an exception")
-    } catch (Exception e) {
+    } catch (Exception ignore) {
       // Expected
     }
 
@@ -121,13 +123,14 @@ class DependencyPluginTest {
     )
 
     cacheDir = projectDir.resolve("../savant-dependency-management/test-deps/savant")
+    integrationDir = projectDir.resolve("../savant-dependency-management/test-deps/integration")
 
     project.workflow = new Workflow(
         new FetchWorkflow(output,
-            new CacheProcess(output, cacheDir.toString())
+            new CacheProcess(output, cacheDir.toString(), integrationDir.toString())
         ),
         new PublishWorkflow(
-            new CacheProcess(output, cacheDir.toString())
+            new CacheProcess(output, cacheDir.toString(), integrationDir.toString())
         ),
         output
     )
@@ -155,7 +158,7 @@ class DependencyPluginTest {
     assertEquals(classpath.toString(),
         "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
@@ -176,7 +179,7 @@ class DependencyPluginTest {
     assertEquals(classpath.toString(),
         "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+            "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
             "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
@@ -211,10 +214,10 @@ class DependencyPluginTest {
     )
     project.workflow = new Workflow(
         new FetchWorkflow(output,
-            new CacheProcess(output, cacheDir.toString())
+            new CacheProcess(output, cacheDir.toString(), integrationDir.toString())
         ),
         new PublishWorkflow(
-            new CacheProcess(output, projectDir.resolve("build/test/integration").toString())
+            new CacheProcess(output, cacheDir.toString(), projectDir.resolve("build/test/integration").toString())
         ),
         output
     )
@@ -244,12 +247,12 @@ class DependencyPluginTest {
     )
     project.workflow = new Workflow(
         new FetchWorkflow(output,
-            new CacheProcess(output, null),
-            new CacheProcess(output, cacheDir.toString()),
+            new CacheProcess(output, null, null),
+            new CacheProcess(output, cacheDir.toString(), integrationDir.toString()),
             new URLProcess(output, "https://repository.savantbuild.org", null, null)
         ),
         new PublishWorkflow(
-            new CacheProcess(output, null)
+            new CacheProcess(output, null, null)
         ),
         output
     )
