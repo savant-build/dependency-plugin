@@ -46,6 +46,12 @@ import org.savantbuild.runtime.RuntimeConfiguration
  * @author Brian Pontarelli
  */
 class DependencyPlugin extends BaseGroovyPlugin {
+  public static Set<String> CopyLeftLicensePrefixes = Set.of(
+      "AGPL-", "GPL-", "CC-", "Abstyles", "APSL", "SL-", "tTorrent-", "L-", "FSL-", "rosym", "ameworx-", "2PS", "atix",
+      "tex2e", "LiQ-", "keIndex", "tosoto", "PL", "web", "OSL-", "CT-PL", "LC-", "bL-", "C-By-", "rity-", "ndmail",
+      "SSL", "eepycat", "ate", "RQUE-", "SL", "STROM", "tcom-", "Aladdin"
+  )
+
   DependencyService dependencyService = new DefaultDependencyService(output)
 
   DependencyPlugin(Project project, RuntimeConfiguration runtimeConfiguration, Output output) {
@@ -80,11 +86,12 @@ class DependencyPlugin extends BaseGroovyPlugin {
     if (invalidLicensesNames != null && invalidLicenses.size() > 0) {
       invalidLicenses = invalidLicensesNames.collect { id -> License.parse(id, null) }
     } else {
-      invalidLicenses = [
-          License.parse("GPL-1.0-only", null), License.parse("GPL-1.0-or-later", null),
-          License.parse("GPL-2.0-only", null), License.parse("GPL-2.0-or-later", null),
-          License.parse("GPL-3.0-only", null), License.parse("GPL-3.0-or-later", null)
-      ]
+      License.Licenses.each { key, license ->
+        if (CopyLeftLicensePrefixes.any { key.startsWith(it) } && !key.contains("classpath-exception")) {
+          invalidLicenses.add(license)
+        }
+        return
+      }
     }
 
     List<ArtifactID> ignoredIDs = []
@@ -212,11 +219,11 @@ class DependencyPlugin extends BaseGroovyPlugin {
     if (testBuildDirectory == null) {
       testBuildDirectory = Paths.get("build/classes/test")
     }
-    List<String> mainDependencyGroups = attributes["mainDependencyGroups"]
+    List<String> mainDependencyGroups = GroovyTools.toListOfStrings(attributes["mainDependencyGroups"])
     if (mainDependencyGroups == null) {
       mainDependencyGroups = ["compile", "provided"]
     }
-    List<String> testDependencyGroups = attributes["testDependencyGroup"]
+    List<String> testDependencyGroups = GroovyTools.toListOfStrings(attributes["testDependencyGroup"])
     if (testDependencyGroups == null) {
       testDependencyGroups = ["test-compile"]
     }
