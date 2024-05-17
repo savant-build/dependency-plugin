@@ -110,38 +110,41 @@ class DependencyPluginTest {
 
   @Test
   void analyzeLicenses() {
+//    output.enableDebug()
+
     FileTools.prune(projectDir.resolve("build/test/licenses"))
 
     DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
     try {
-      plugin.analyzeLicenses([:])
+      plugin.analyzeLicenses()
       fail("Expected the analyze to throw an exception")
     } catch (Exception ignore) {
       // Expected
     }
 
+    // Fix everything and ensure it passes
+    plugin.settings.license.allowedIDs.add("GPL-2.0-only")
+    plugin.settings.license.allowedLicenses.add(License.parse("Commercial", "Commercial license"))
+    plugin.settings.license.allowedLicenses.add(License.parse("OtherNonDistributableOpenSource", "Open source"))
+    plugin.analyzeLicenses()
+
+    // Remove one allowed and ensure it fails
     try {
-      plugin.analyzeLicenses(null)
+      plugin.settings.license.allowedIDs.remove("GPL-2.0-with-classpath-exception")
+      plugin.analyzeLicenses()
       fail("Expected the analyze to throw an exception")
     } catch (Exception ignore) {
       // Expected
     }
 
-    try {
-      plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"])
-      fail("Expected the analyze to throw an exception")
-    } catch (Exception ignore) {
-      // Expected
-    }
+    // Add it back and ensure it passes
+    plugin.settings.license.allowedIDs.add("GPL-2.0-with-classpath-exception")
+    plugin.analyzeLicenses()
 
-    try {
-      plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-with-classpath-exception"])
-      fail("Expected the analyze to throw an exception")
-    } catch (Exception ignore) {
-      // Expected
-    }
-
-    plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"], ignoredIDs: ["org.savantbuild.test:leaf:*:*"])
+    // Remove a bad license, but ignore the artifact
+    plugin.settings.license.allowedIDs.remove("GPL-2.0-only")
+    plugin.settings.license.ignoredArtifactIDs.add("org.savantbuild.test:leaf:*:*")
+    plugin.analyzeLicenses()
   }
 
   @Test
