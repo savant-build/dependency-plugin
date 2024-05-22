@@ -46,6 +46,8 @@ import org.savantbuild.runtime.RuntimeConfiguration
  * @author Brian Pontarelli
  */
 class DependencyPlugin extends BaseGroovyPlugin {
+  DependencySettings settings = new DependencySettings()
+
   DependencyService dependencyService = new DefaultDependencyService(output)
 
   DependencyPlugin(Project project, RuntimeConfiguration runtimeConfiguration, Output output) {
@@ -65,48 +67,63 @@ class DependencyPlugin extends BaseGroovyPlugin {
    * Analyzes the projects dependencies to determine if any invalid licenses exist.
    * <p>
    * <pre>
-   *   license.analyze(invalidLicenses: ["GPL-2.0"], ignoredIDs: ["com.mysql:mysql-jdbc-connector:*:*"])
+   *   dependency.settings.license.allowedLicenses = ["Apache-2.0"]
+   *   dependency.settings.license.ignoredArtifactIDs = ["com.mysql:mysql-jdbc-connector:*:*"]
+   *   dependency.analyzeLicenses()
    * </pre>
    */
-  void analyzeLicenses(Map<String, Object> attributes) {
-    List<String> invalidLicensesNames = null
-    List<String> ignoredIDSSpecifications = null
-    if (attributes != null) {
-      invalidLicensesNames = GroovyTools.toListOfStrings(attributes.get("invalidLicenses"))
-      ignoredIDSSpecifications = GroovyTools.toListOfStrings(attributes.get("ignoredIDs"))
-    }
-
-    List<License> invalidLicenses = []
-    if (invalidLicensesNames != null && invalidLicenses.size() > 0) {
-      invalidLicenses = invalidLicensesNames.collect { id -> License.parse(id, null) }
-    } else {
-      invalidLicenses = [
-          License.parse("GPL-1.0-only", null), License.parse("GPL-1.0-or-later", null),
-          License.parse("GPL-2.0-only", null), License.parse("GPL-2.0-or-later", null),
-          License.parse("GPL-3.0-only", null), License.parse("GPL-3.0-or-later", null)
-      ]
-    }
-
-    List<ArtifactID> ignoredIDs = []
-    if (ignoredIDSSpecifications != null && ignoredIDSSpecifications.size() > 0) {
-      ignoredIDs = ignoredIDSSpecifications.collect { id -> new ArtifactID(id) }
-    }
-
-    output.infoln("Analyzing licenses in dependencies to locate ${invalidLicenses}")
-
-    project.artifactGraph.traverse(project.artifactGraph.root, false, null, { origin, destination, group, depth, isLast ->
-      boolean ignored = ignoredIDs.any { id -> DependencyTools.matchesExclusion(destination.id, id) }
-      if (ignored) {
-        return true
-      }
-
-      License invalid = destination.licenses.find { license -> invalidLicenses.contains(license) }
-      if (invalid != null) {
-        fail("Your project contains a dependency [${destination}] with an invalid license [${invalid}]")
-      }
-
-      return true
+  void analyzeLicenses() {
+    List<ArtifactID> ignoredIDs = settings.license.ignoredArtifactIDs.collect({ id -> new ArtifactID(id) })
+    List<License> allowedLicenses = settings.license.allowedIDs.collect({ id -> License.parse(id, null) })
+    allowedLicenses.addAll(settings.license.allowedLicenses)
+    settings.license.allowedPrefixes.each({ prefix ->
+      License.Licenses.each({ id, license ->
+        if (id.startsWith(prefix)) {
+          allowedLicenses.add(license)
+        }
+        return
+      })
     })
+
+    allowedLicenses.sort({ it.identifier })
+
+    output.infoln("Analyzing licenses in dependencies to ensure these allowed licenses ${allowedLicenses}")
+
+    project.artifactGraph.traverse(project.artifactGraph.root, false, null,
+        { origin, destination, group, depth, isLast ->
+          output.debugln("Checking license(s) ${destination.licenses} of artifact [${destination}]")
+
+          // Check if this artifact is ignored.
+          boolean ignored = ignoredIDs.any({ id -> DependencyTools.matchesExclusion(destination.id, id) })
+          if (ignored) {
+            output.debugln("Skipping license check for [${destination}]")
+            return true
+          }
+
+          // Remove all the valid licenses from the artifact list, including the ones that have allowed texts. If any
+          // are left over, those are the invalid ones.
+          boolean anyValid = destination.licenses.any({ license -> allowedLicenses.contains(license) })
+          if (!anyValid) {
+            List<License> artifactLicenses = new ArrayList<>(destination.licenses)
+            artifactLicenses.removeAll(allowedLicenses)
+            artifactLicenses.removeAll()
+
+            List<String> licenseTexts = artifactLicenses.findAll({ license -> license.text != null && !license.text.isEmpty() })
+                .collect({ license -> license.text })
+            if (!licenseTexts.isEmpty()) {
+              output.debugln("License texts that were invalid were ${licenseTexts}")
+            }
+
+            fail("Your project contains a dependency [${destination}] with an invalid license(s) ${artifactLicenses}. You " +
+                "can add this license to [dependency.settings.license.allowed], [dependency.settings.license.allowedPrefixes], " +
+                "or [dependency.settings.license.allowedLicenses]. The license objects are useful for Commercial or Other licenses that " +
+                "you want to allow only in specific cases. You can enable debug to see the license text of the licenses " +
+                "that were invalid, in case you need that information to call License.parse(id, text).")
+          }
+
+          return true
+        }
+    )
   }
 
   /**
@@ -212,11 +229,11 @@ class DependencyPlugin extends BaseGroovyPlugin {
     if (testBuildDirectory == null) {
       testBuildDirectory = Paths.get("build/classes/test")
     }
-    List<String> mainDependencyGroups = attributes["mainDependencyGroups"]
+    List<String> mainDependencyGroups = GroovyTools.toListOfStrings(attributes["mainDependencyGroups"])
     if (mainDependencyGroups == null) {
       mainDependencyGroups = ["compile", "provided"]
     }
-    List<String> testDependencyGroups = attributes["testDependencyGroup"]
+    List<String> testDependencyGroups = GroovyTools.toListOfStrings(attributes["testDependencyGroup"])
     if (testDependencyGroups == null) {
       testDependencyGroups = ["test-compile"]
     }

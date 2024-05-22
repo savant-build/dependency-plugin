@@ -238,11 +238,11 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/dev/os/savant/dependency-plugin/.savant/cache/org/savantbuild/savant-version/2.0.0-RC.6/savant-version-2.0.0-RC.6.jar!/" />
+          <root url="jar://$USER_HOME$/dev/os/savant/dependency-plugin/.savant/cache/org/savantbuild/savant-version/2.0.0-RC.7/savant-version-2.0.0-RC.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/dev/os/savant/dependency-plugin/.savant/cache/org/savantbuild/savant-version/2.0.0-RC.6/savant-version-2.0.0-RC.6-src.jar!/" />
+          <root url="jar://$USER_HOME$/dev/os/savant/dependency-plugin/.savant/cache/org/savantbuild/savant-version/2.0.0-RC.7/savant-version-2.0.0-RC.7-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

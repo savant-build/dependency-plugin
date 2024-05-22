@@ -72,35 +72,6 @@ class DependencyPluginTest {
     }
   }
 
-  @Test
-  void analyzeLicenses() {
-    FileTools.prune(projectDir.resolve("build/test/licenses"))
-
-    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
-    try {
-      plugin.analyzeLicenses([:])
-      fail("Expected the analyze to throw an exception")
-    } catch (Exception ignore) {
-      // Expected
-    }
-
-    try {
-      plugin.analyzeLicenses(null)
-      fail("Expected the analyze to throw an exception")
-    } catch (Exception ignore) {
-      // Expected
-    }
-
-    try {
-      plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"])
-      fail("Expected the analyze to throw an exception")
-    } catch (Exception ignore) {
-      // Expected
-    }
-
-    plugin.analyzeLicenses(invalidLicenses: ["GPL-2.0-only"], ignoredIDs: ["org.savantbuild.test:leaf:*:*"])
-  }
-
   @BeforeMethod
   void beforeMethod() {
     output = new SystemOutOutput(true)
@@ -109,13 +80,14 @@ class DependencyPluginTest {
     project = new Project(projectDir, output)
     project.group = "org.savantbuild.test"
     project.name = "dependency-plugin-test"
-    project.version = new Version("1.0")
+    project.version = new Version("1.0.0")
     project.licenses.add(License.parse("Apache-2.0", null))
 
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
             new Artifact("org.savantbuild.test:multiple-versions:1.0.0"),
-            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0")
+            new Artifact("org.savantbuild.test:multiple-versions-different-dependencies:1.0.0"),
+            new Artifact("org.savantbuild.test:gpl-with-cpe:1.0.0")
         ),
         new DependencyGroup("runtime", true,
             new Artifact("org.savantbuild.test:intermediate:1.0.0")
@@ -134,6 +106,45 @@ class DependencyPluginTest {
         ),
         output
     )
+  }
+
+  @Test
+  void analyzeLicenses() {
+//    output.enableDebug()
+
+    FileTools.prune(projectDir.resolve("build/test/licenses"))
+
+    DependencyPlugin plugin = new DependencyPlugin(project, new RuntimeConfiguration(), output)
+    try {
+      plugin.analyzeLicenses()
+      fail("Expected the analyze to throw an exception")
+    } catch (Exception ignore) {
+      // Expected
+    }
+
+    // Fix everything and ensure it passes
+    plugin.settings.license.allowedIDs.add("GPL-2.0-only")
+    plugin.settings.license.allowedLicenses.add(License.parse("Commercial", "Commercial license"))
+    plugin.settings.license.allowedLicenses.add(License.parse("OtherNonDistributableOpenSource", "Open source"))
+    plugin.analyzeLicenses()
+
+    // Remove one allowed and ensure it fails
+    try {
+      plugin.settings.license.allowedIDs.remove("GPL-2.0-with-classpath-exception")
+      plugin.analyzeLicenses()
+      fail("Expected the analyze to throw an exception")
+    } catch (Exception ignore) {
+      // Expected
+    }
+
+    // Add it back and ensure it passes
+    plugin.settings.license.allowedIDs.add("GPL-2.0-with-classpath-exception")
+    plugin.analyzeLicenses()
+
+    // Remove a bad license, but ignore the artifact
+    plugin.settings.license.allowedIDs.remove("GPL-2.0-only")
+    plugin.settings.license.ignoredArtifactIDs.add("org.savantbuild.test:leaf:*:*")
+    plugin.analyzeLicenses()
   }
 
   @Test
@@ -156,13 +167,14 @@ class DependencyPluginTest {
     }
 
     assertEquals(classpath.toString(),
+        "${cacheDir.resolve("org/savantbuild/test/gpl-with-cpe/1.0.0/gpl-with-cpe-1.0.0.jar").toAbsolutePath()}:" +
         "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}"
+        "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+        "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}"
     )
   }
 
@@ -177,14 +189,15 @@ class DependencyPluginTest {
     }
 
     assertEquals(classpath.toString(),
+        "${cacheDir.resolve("org/savantbuild/test/gpl-with-cpe/1.0.0/gpl-with-cpe-1.0.0.jar").toAbsolutePath()}:" +
         "${cacheDir.resolve("org/savantbuild/test/multiple-versions/1.1.0/multiple-versions-1.1.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
-            "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}:" +
-            project.directory.resolve("foo.jar").toAbsolutePath()
+        "${cacheDir.resolve("org/savantbuild/test/leaf/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+        "${integrationDir.resolve("org/savantbuild/test/integration-build/2.1.1-{integration}/integration-build-2.1.1-{integration}.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/multiple-versions-different-dependencies/1.1.0/multiple-versions-different-dependencies-1.1.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf1/1.0.0/leaf1-1.0.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf2/1.0.0/leaf2-1.0.0.jar").toAbsolutePath()}:" +
+        "${cacheDir.resolve("org/savantbuild/test/leaf3/1.0.0/leaf3-1.0.0.jar").toAbsolutePath()}:" +
+        project.directory.resolve("foo.jar").toAbsolutePath()
     )
   }
 
@@ -198,7 +211,7 @@ class DependencyPluginTest {
     }
 
     assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/multiple-versions-1.1.0.jar")))
-    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/leaf1-1.0.0.jar")))
+    assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/gpl-with-cpe-1.0.0.jar")))
     assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/integration-build-2.1.1-{integration}.jar")))
     assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/multiple-versions-different-dependencies-1.1.0.jar")))
     assertTrue(Files.isRegularFile(projectDir.resolve("build/test/copy/leaf2-1.0.0.jar")))
@@ -238,11 +251,11 @@ class DependencyPluginTest {
     project.dependencies = new Dependencies(
         new DependencyGroup("compile", true,
             new Artifact("org.savantbuild:savant-core:0.4.4"),
-            new Artifact("org.apache.commons:commons-compress:1.7"),
+            new Artifact("org.apache.commons:commons-compress:1.7.0"),
         ),
         new DependencyGroup("test-compile", true,
             new Artifact("org.testng:testng:6.8.7"),
-            new Artifact("org.apache.commons:commons-compress:1.7")
+            new Artifact("org.apache.commons:commons-compress:1.7.0")
         )
     )
     project.workflow = new Workflow(
