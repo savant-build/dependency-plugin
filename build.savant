@@ -30,7 +30,7 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0-RC.
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.8")
       dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.7")
       dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.7")
       dependency(id: "org.savantbuild:savant-version:2.0.0-RC.7")
@@ -64,7 +64,7 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "17"
 idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:2.0.0-RC.7"                  : "savant-core",
+    "org.savantbuild:savant-core:2.0.0-RC.8"                  : "savant-core",
     "org.savantbuild:savant-dependency-management:2.0.0-RC.7" : "savant-dependency-management",
     "org.savantbuild:savant-io:2.0.0-RC.7"                    : "savant-io",
     "org.savantbuild:savant-utils:2.0.0-RC.7"                 : "savant-utils"
