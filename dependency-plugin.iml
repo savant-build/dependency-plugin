@@ -12,6 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="groovy-4.0.22" level="application" />
     <orderEntry type="module" module-name="savant-core" scope="PROVIDED" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
@@ -324,6 +325,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="groovy-4.0.22" level="application" />
   </component>
 </module>
+
