@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2024, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
+def savantVersion = "2.0.0-{integration}"
 project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
@@ -30,14 +31,14 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0", l
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.8")
-      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.7")
-      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.7")
-      dependency(id: "org.savantbuild:savant-version:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-core:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-dependency-management:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-version:${savantVersion}")
     }
     group(name: "compile") {
       dependency(id: "org.ow2.asm:asm:9.2.0")
-      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
@@ -64,10 +65,10 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "17"
 idea.settings.imlFile = "dependency-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:2.0.0-RC.8"                  : "savant-core",
-    "org.savantbuild:savant-dependency-management:2.0.0-RC.7" : "savant-dependency-management",
-    "org.savantbuild:savant-io:2.0.0-RC.7"                    : "savant-io",
-    "org.savantbuild:savant-utils:2.0.0-RC.7"                 : "savant-utils"
+    ("org.savantbuild:savant-core:${savantVersion}".toString())                 : "savant-core",
+    ("org.savantbuild:savant-dependency-management:${savantVersion}".toString()): "savant-dependency-management",
+    ("org.savantbuild:savant-io:${savantVersion}".toString())                   : "savant-io",
+    ("org.savantbuild:savant-utils:${savantVersion}".toString())                : "savant-utils"
 ]
 
 target(name: "clean", description: "Cleans the project") {
