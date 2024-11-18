@@ -14,7 +14,7 @@
  * language governing permissions and limitations under the License.
  */
 savantVersion = "2.0.0"
-project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0", licenses: ["Apache-2.0"]) {
+project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.1", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
       cache()
@@ -31,9 +31,9 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0", l
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:${savantVersion}")
-      dependency(id: "org.savantbuild:savant-dependency-management:${savantVersion}")
-      dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-core:2.0.1")
+      dependency(id: "org.savantbuild:savant-dependency-management:2.0.1")
+      dependency(id: "org.savantbuild:savant-utils:2.0.1")
       dependency(id: "org.savantbuild:savant-version:${savantVersion}")
     }
     group(name: "compile") {
@@ -51,11 +51,11 @@ project(group: "org.savantbuild.plugin", name: "dependency", version: "2.0.0", l
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.7")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.6")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.6")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.7")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.6")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0")
 
 // Plugin settings
 groovy.settings.groovyVersion = "4.0"
